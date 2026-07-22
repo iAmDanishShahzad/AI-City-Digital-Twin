@@ -8,7 +8,78 @@ The simulation is illustrative. It is designed to make routing and congestion co
 
 For a given district definition, vehicle roster, simulation tick, and scenario state, every conforming implementation must produce the same simulation snapshot, analytics summary, and insight.
 
-## 2. Simulation Scope
+## 2. Terminology
+
+| Term | Definition |
+| --- | --- |
+| Tick | One fixed logical simulation step. The MVP advances 10 ticks per simulated second. |
+| Snapshot | An immutable record of complete simulation state after a completed tick. |
+| Node | A stable graph point representing an intersection, origin, or destination. |
+| Edge | A directed road connection from one node to another. |
+| Route | An ordered, contiguous sequence of edges from an origin node to a destination node. |
+| Vehicle | A configured, visible simulation entity that moves along a route or waits for one. |
+| Scenario | A validated, bounded change to the normal district state. The required MVP scenario is one road closure. |
+| Probe | A non-visible, fixed origin-to-destination route used to calculate a simulation access proxy. |
+| Analytics | Deterministic calculations that compare scenario and baseline snapshots to produce impact facts. |
+| Insight | The deterministic, user-facing explanation generated only from validated analytics and scenario context. |
+
+## 3. Simulation Constants
+
+All fixed values in this specification are collected here. Implementations must use these values consistently; they must not be replaced with random, frame-rate-dependent, or user-configurable values in the MVP.
+
+| Constant | Value | Use |
+| --- | --- | --- |
+| District count | 1 | One fictional district is simulated. |
+| Active scenario limit | 1 | Only one road closure may be active at a time. |
+| Probe count | 2 | One emergency-access probe and one delivery-access probe. |
+| Tick rate | 10 ticks per simulated second | Logical simulation cadence. |
+| Tick duration | 0.1 simulated seconds | Duration of one logical tick. |
+| Initial tick | 0 | Starting state for a new or reset simulation. |
+| Base vehicle speed | 6 abstract distance units per simulated second | Uncongested vehicle movement. |
+| Vehicle count | 8-12 visible vehicles | MVP roster limit. |
+| Vehicle spawn window | Tick 0 through tick 29 | Allowed fixed `spawnTick` range. |
+| Respawn delay | 20 ticks | Wait after a vehicle reaches its destination. |
+| Route retry delay | 10 ticks | Wait after no valid route is available. |
+| Node count | 8-12 nodes | MVP graph limit. |
+| Directed edge count | 12-20 directed edges | MVP graph limit. |
+| Closable edge count | 1 | Required road-closure target. |
+| Edge-progress bounds | 0 through 1 inclusive | Valid range while a vehicle traverses an edge. |
+| Base congestion multiplier | 1 | Minimum multiplier for an unoccupied edge. |
+| Congestion contribution cap | 2 | Maximum occupancy-derived amount added to the base multiplier. |
+| Maximum congestion multiplier | 3 | Upper bound on congestion slowdown. |
+| Free-flow threshold | Occupancy ratio below 0.75 | Edge display classification. |
+| Busy threshold | Occupancy ratio from 0.75 to below 1.25 | Edge display classification. |
+| Congested threshold | Occupancy ratio 1.25 or greater | Edge display classification and congestion marker. |
+| Affected-edge occupancy increase | 0.25 | Minimum scenario-to-baseline increase for an edge to be affected. |
+| Moderate traffic-impact ratio | 20% of active vehicles rerouted | Analytics threshold. |
+| High traffic-impact ratio | 50% of active vehicles rerouted | Analytics threshold. |
+| Delayed-probe cost increase | 25% | Minimum scenario-to-baseline route-cost increase for a delayed probe. |
+| Scenario scheduling delay | 1 logical tick | A selected closure is applied on the next tick. |
+| Scenario response target | Under 2 seconds | Time for the closure, simulation, analytics, and insight to become visible. |
+| Target rendering frame rate | Approximately 60 frames per second | Scene-performance target where practical. |
+
+## 4. Simulation Flow
+
+```text
+District Definition
+        |
+        v
+Road Graph
+        |
+        v
+Simulation Loop
+        |
+        v
+Analytics
+        |
+        v
+Deterministic Insight Engine
+        |
+        v
+UI
+```
+
+## 5. Simulation Scope
 
 ### Included in the MVP
 
@@ -26,7 +97,7 @@ For a given district definition, vehicle roster, simulation tick, and scenario s
 - Detailed emergency dispatch or delivery operations.
 - Any claim that the output represents real-world travel time, safety, or operational advice.
 
-## 3. World Model
+## 6. World Model
 
 The world is an immutable district definition plus an evolving simulation state.
 
@@ -53,7 +124,7 @@ Each snapshot contains:
 
 Snapshots are immutable values. A new tick creates a new snapshot; no consumer may mutate an existing snapshot.
 
-## 4. Road Graph Model
+## 7. Road Graph Model
 
 The road network is a directed, weighted graph.
 
@@ -74,7 +145,7 @@ MVP limits are:
 
 The catalog must reject a district that has duplicate identifiers, missing edge endpoints, non-positive length or capacity, or no alternate path for the required demonstration route.
 
-## 5. Vehicle Model
+## 8. Vehicle Model
 
 Every visible vehicle is defined by a stable vehicle identifier and the following immutable configuration:
 
@@ -95,7 +166,7 @@ Every vehicle snapshot has one of these states:
 
 Vehicles do not collide, overtake, change lane, or make discretionary stops. Their only behavior is deterministic route traversal, re-routing, waiting, and respawning.
 
-## 6. Simulation Loop
+## 9. Simulation Loop
 
 The logical simulation advances in fixed steps of `0.1` simulated seconds (10 ticks per second). Rendering may interpolate snapshots, but interpolation must never alter logical simulation state.
 
@@ -112,7 +183,7 @@ For each tick, execute the following sequence exactly:
 
 All collections must be evaluated in ascending stable identifier order. No behavior may depend on object insertion order, wall-clock time, random values, frame rate, or asynchronous completion order.
 
-## 7. Vehicle Lifecycle
+## 10. Vehicle Lifecycle
 
 1. A vehicle begins as `scheduled`.
 2. At its configured `spawnTick`, it requests a route from its origin to its destination.
@@ -124,7 +195,7 @@ All collections must be evaluated in ascending stable identifier order. No behav
 
 Vehicles never reverse direction along an edge. A vehicle already on an edge when it becomes closed completes that traversal; it may not enter the closed edge again after reaching its next node.
 
-## 8. Vehicle Spawning
+## 11. Vehicle Spawning
 
 - The MVP contains 8-12 visible vehicles.
 - Each vehicle's `spawnTick` is a fixed integer from `0` through `29`.
@@ -133,7 +204,7 @@ Vehicles never reverse direction along an edge. A vehicle already on an edge whe
 - No random origin, destination, speed, or spawn time is permitted.
 - A vehicle that cannot find a route waits according to the lifecycle rule; it is not deleted, teleported, or assigned an invented route.
 
-## 9. Routing Rules
+## 12. Routing Rules
 
 ### Route selection
 
@@ -153,7 +224,7 @@ Immediately after a closure is applied, every vehicle whose remaining route cont
 
 If no route exists, the vehicle enters the `waiting` state at its current node and retries after 10 ticks.
 
-## 10. Congestion Model
+## 13. Congestion Model
 
 Congestion is a simple, deterministic visual and routing signal. It is not a model of physical traffic flow.
 
@@ -181,7 +252,7 @@ The congestion multiplier is calculated once from the pre-movement occupancy and
 
 An edge may be visually marked as congested only when its ratio is `1.25` or greater. The maximum multiplier is `3`, preventing one edge from indefinitely slowing the simulation.
 
-## 11. Scenario Rules
+## 14. Scenario Rules
 
 ### Supported MVP scenario: road closure
 
@@ -200,7 +271,7 @@ Rules:
 
 Future scenario types must be represented as explicit scenario effects. They must not change the road-closure rules by implication.
 
-## 12. Analytics Specification
+## 15. Analytics Specification
 
 Analytics consumes immutable baseline and scenario snapshots; it never changes simulation state.
 
@@ -239,7 +310,7 @@ For each probe, compare its scenario cost with its same-tick baseline cost:
 
 Emergency and delivery results are **simulation proxies only**. They indicate route accessibility within this fictional graph; they are not real-world predictions of dispatch performance, medical outcome, delivery time, or operational capacity.
 
-## 13. Deterministic Insight Engine
+## 16. Deterministic Insight Engine
 
 The MVP insight engine is deterministic template selection, not an external generative dependency. It consumes only the validated analytics summary and active scenario context.
 
@@ -264,7 +335,7 @@ Template selection is fixed:
 
 Statements are concatenated in the listed order. No random wording, external data, inferred cause, or unsupported metric may be added. If analytics validation fails, display a fixed safe message: “Simulation insight is unavailable. Reset the scenario to return to the baseline.”
 
-## 14. Reset Behavior
+## 17. Reset Behavior
 
 Reset creates a new state from the immutable district definition. It must:
 
@@ -277,7 +348,7 @@ Reset creates a new state from the immutable district definition. It must:
 
 Reset must not reuse mutable references from the state being reset. Repeating the same tick sequence after reset must reproduce the same snapshots as a fresh initial load.
 
-## 15. Performance Constraints
+## 18. Performance Constraints
 
 - The simulation must use fixed logical ticks and must not couple its progression to rendering frame rate.
 - The MVP district is limited to 12 nodes, 20 directed edges, and 12 visible vehicles.
@@ -287,7 +358,7 @@ Reset must not reuse mutable references from the state being reset. Repeating th
 - The complete road-closure transition, including simulation, analytics, and insight update, must become visible in under 2 seconds on demonstration hardware.
 - The displayed scene should aim for approximately 60 frames per second where practical.
 
-## 16. Assumptions and Simplifications
+## 19. Assumptions and Simplifications
 
 - The district is fictional, compact, and purpose-built for visual clarity.
 - Abstract lengths, capacities, speed, and route costs are internal demonstration values, not geographic or operational measurements.
@@ -297,3 +368,13 @@ Reset must not reuse mutable references from the state being reset. Repeating th
 - A road closure affects entry and route availability immediately at a tick boundary, while vehicles already on the segment finish traversing it.
 - A believable, repeatable visual outcome is more valuable than mathematical or scientific fidelity.
 - The required MVP demonstration uses one road-closure scenario. Additional scenario types remain future enhancements until separately specified.
+
+## 20. Future Extensions
+
+The following are future enhancements only. They are outside the MVP and must preserve deterministic simulation behavior when separately specified and implemented:
+
+- Bridge Closure
+- Flooding
+- Road Construction
+- Accident
+- Variable Vehicle Types
