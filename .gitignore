@@ -1,5 +1,6 @@
 # Node
 node_modules/
+.npm-cache/
 
 # Build
 dist/
@@ -25,3 +26,5 @@ coverage/
 
 # OS
 Thumbs.db
+
+

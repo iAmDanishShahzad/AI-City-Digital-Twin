@@ -1,0 +1,15 @@
+.shell {
+  color: #f8fafc;
+  background: #0f172a;
+  min-height: 100vh;
+  padding: 3rem;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  margin: 0;
+}
+
+p {
+  color: #cbd5e1;
+}
