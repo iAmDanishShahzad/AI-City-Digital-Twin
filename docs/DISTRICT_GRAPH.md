@@ -58,7 +58,7 @@ linkStyle 1 stroke:#2cff2c,stroke-width:3px,stroke-dasharray:8 4
 
 - **`e02 (civic-square-to-market)`** is the only closable edge.
 
-Paired labels represent two directed edges between the same nodes. The exact direction of each edge is listed in the table below.
+Each Mermaid connection represents one directed edge. The table below is the canonical edge-ID and direction reference.
 
 > [!NOTE]
 > **If Mermaid does not render in a viewer, use the directed-edge table below as the canonical reference.**
