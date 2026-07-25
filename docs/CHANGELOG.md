@@ -14,3 +14,11 @@
 - Added shared result and recoverable application-error contracts.
 - Added typed application states, actions, and reducer transitions.
 - Added reducer tests for the valid flow, reset, and error recovery.
+
+## M03 - District Catalog and Graph Validation
+
+- Added the immutable eight-node Central District catalog with 16 directed edges and one closable edge.
+- Added deterministic baseline vehicles, named areas, and emergency and delivery probes.
+- Added typed catalog validation for graph limits, references, identifiers, vehicle/probe definitions, and the required alternate-route demonstration.
+- Added deterministic catalog validation tests.
+- Added an ASCII district-graph reference for future routing and scenario verification.

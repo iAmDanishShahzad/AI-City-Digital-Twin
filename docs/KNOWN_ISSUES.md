@@ -27,10 +27,6 @@ This document tracks intentionally postponed work. Record deferred items here ra
 
 **Reason:** These selected rendering dependencies are intentionally postponed until M04, when the project first needs them.
 
-### District Catalog and Graph Validation
-
-**Reason:** The fixed fictional district is scheduled for M03 and must be implemented after the M02 contracts it uses.
-
 ### Routing and Simulation Behavior
 
 **Reason:** Deterministic route selection, vehicle lifecycle, and congestion behavior are scheduled for M05 through M07 after the district catalog is available.

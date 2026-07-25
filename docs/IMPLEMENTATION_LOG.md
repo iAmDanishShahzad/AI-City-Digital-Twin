@@ -68,3 +68,37 @@ This document records completed implementation activities in a review-friendly f
 - Analytics calculations.
 - Insight generation.
 - Rendering and user controls.
+
+## M03 - District Catalog and Graph Validation
+
+### Files Created
+
+- `src/district/catalog/central-district.ts` — immutable Central District source data.
+- `src/district/catalog/district-constraints.ts` — fixed catalog limits and vehicle constants.
+- `src/district/catalog/validate-district-definition.ts` — typed, non-throwing catalog validation.
+- `src/district/catalog/validate-district-definition.test.ts` — catalog validation tests.
+- `src/district/model/district-validation.ts` — validation error contracts.
+- `docs/DISTRICT_GRAPH.md` — ASCII graph, edge, closable-edge, and probe reference.
+
+### Files Modified
+
+- `src/district/index.ts` — exported the catalog, validator, and validation contracts.
+- `docs/CHANGELOG.md` — added the M03 changelog entry.
+- `docs/KNOWN_ISSUES.md` — removed the completed district-catalog deferral.
+
+### Public APIs Added
+
+- `centralDistrictDefinition`
+- `validateDistrictDefinition`
+- `DistrictValidationError`
+- `DistrictValidationErrorCode`
+
+### Tests Added
+
+- Valid immutable catalog acceptance.
+- Rejection of duplicate IDs, missing references, invalid edge values, invalid vehicle/probe data, and missing alternate routes.
+
+### Deferred Until Later Milestones
+
+- Weighted route selection and tie breaking (M05).
+- Simulation, congestion, road-closure behavior, analytics, insights, and rendering.

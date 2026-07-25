@@ -1,3 +1,5 @@
+export { centralDistrictDefinition } from './catalog/central-district';
+export { validateDistrictDefinition } from './catalog/validate-district-definition';
 export type {
   DistrictArea,
   DistrictDefinition,
@@ -8,3 +10,7 @@ export type {
   RouteProbe,
   VehicleDefinition,
 } from './model/district-definition';
+export type {
+  DistrictValidationError,
+  DistrictValidationErrorCode,
+} from './model/district-validation';
