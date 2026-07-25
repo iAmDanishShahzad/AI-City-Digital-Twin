@@ -61,7 +61,7 @@ linkStyle 1 stroke:#2cff2c,stroke-width:3px,stroke-dasharray:8 4
 Paired labels represent two directed edges between the same nodes. The exact direction of each edge is listed in the table below.
 
 > [!NOTE]
-> _If Mermaid does not render in a viewer, use the directed-edge table below as the canonical reference._
+> **If Mermaid does not render in a viewer, use the directed-edge table below as the canonical reference.**
 ## Node IDs
 
 | Short label | Node ID |
