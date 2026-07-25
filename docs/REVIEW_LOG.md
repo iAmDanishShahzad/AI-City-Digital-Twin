@@ -4,6 +4,18 @@ This document records completed project reviews. Add a new entry after every fut
 
 ## Review After M01 Toolchain Implementation
 
+**Date:** 2026-07-23
+
+**Reviewed by:** Codex GPT-5.6
+
+**Outcome:** Approved
+
+**Approved:** Yes
+
+**Issues:** None.
+
+**Follow-up:** Proceed to M02.
+
 ### Scope
 
 - Compared the Vite, React, TypeScript, ESLint, Prettier, and Vitest configuration with `TECH_STACK.md`.
@@ -22,6 +34,18 @@ This document records completed project reviews. Add a new entry after every fut
 - The initial development server, build, typecheck, lint, formatting check, and test run passed.
 
 ## Code Review After M01 Toolchain Implementation
+
+**Date:** 2026-07-23
+
+**Reviewed by:** Codex GPT-5.6
+
+**Outcome:** Approved after dependency cleanup
+
+**Approved:** Yes
+
+**Issues:** Unneeded 3D rendering packages were present before their M04 use.
+
+**Follow-up:** Proceed to M02 with rendering packages deferred until M04.
 
 ### Scope
 
@@ -45,6 +69,18 @@ This document records completed project reviews. Add a new entry after every fut
 
 ## Review After M02 Domain Contracts and Application State Implementation
 
+**Date:** 2026-07-23
+
+**Reviewed by:** Codex GPT-5.6
+
+**Outcome:** Approved
+
+**Approved:** Yes
+
+**Issues:** None.
+
+**Follow-up:** Proceed to the M02 code review, then M03.
+
 ### Scope
 
 - Compared the current Vite, React, TypeScript, ESLint, Prettier, Vitest, and Testing Library setup with `TECH_STACK.md`.
@@ -63,6 +99,18 @@ This document records completed project reviews. Add a new entry after every fut
 - The M02 typecheck, lint, test run, formatting check, and production build passed.
 
 ## Code Review After M02 Domain Contracts and Application State Implementation
+
+**Date:** 2026-07-23
+
+**Reviewed by:** Codex GPT-5.6
+
+**Outcome:** Approved after dependency cleanup
+
+**Approved:** Yes
+
+**Issues:** `@testing-library/user-event` was unused by M01 and M02.
+
+**Follow-up:** Proceed to M03; add the package only if a later UI test needs it.
 
 ### Scope
 
@@ -90,6 +138,18 @@ Copy this structure for every future review:
 
 ```markdown
 ## [Review Type] After M[NN] [Milestone Title]
+
+**Date:** YYYY-MM-DD
+
+**Reviewed by:** Codex GPT-5.6
+
+**Outcome:** Approved | Approved with follow-up | Needs revision
+
+**Approved:** Yes | No
+
+**Issues:** [None or concise description.]
+
+**Follow-up:** [Next action or milestone.]
 
 ### Scope
 
