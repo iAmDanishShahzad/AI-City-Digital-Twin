@@ -25,7 +25,7 @@ Dependencies flow downward only. Application is the composition root: it may ass
 
 | Layer or module | May depend on | Must not depend on |
 | --- | --- | --- |
-| Presentation | Its own projection, interface, and scene code; Core contracts | Application, Simulation, Analytics, Insights, Scenario effects, Infrastructure |
+| Presentation | Its own projection, interface, and scene code; public immutable domain contracts; Core contracts | Application, Simulation engines, Analytics rules, Insights, Scenario-effect implementations, Infrastructure |
 | Application | Presentation public entry points; public domain APIs; Core | Private internals of another module |
 | District | Core | Application, Presentation, other Domain modules, Infrastructure |
 | Scenarios | Core | Application, Presentation, Simulation engine, Analytics, Infrastructure |
@@ -37,8 +37,22 @@ Dependencies flow downward only. Application is the composition root: it may ass
 
 ## Rules
 
-- Presentation must not import Simulation directly, including routing, engine, congestion, analytics, scenario-effect, or insight implementations.
-- Presentation must never implement business or simulation logic; it renders projection data and emits user intent through callbacks.
+### Presentation Layer
+
+Presentation may depend on:
+
+- Presentation projection models.
+- Public immutable domain contracts.
+- Core shared types and result contracts.
+
+Presentation must not:
+
+- Import simulation engines, routing rules, congestion rules, analytics rules, insight implementations, or scenario-effect implementations.
+- Import application reducers or application-state implementation details.
+- Execute routing, simulation, congestion, analytics, or insight behavior.
+- Mutate domain state.
+
+All rendering components must consume presentation projection objects. Public domain objects may be read only while creating a projection and must never be read inside a rendering component.
 - Application orchestrates use cases: it validates intent, applies scenarios, advances state, requests analytics and insight, and publishes projections. It must not contain routing, lifecycle, congestion, or analytics rules.
 - Simulation contains all deterministic domain behavior: graph traversal, routing, vehicle lifecycle, congestion, closure behavior, scenario behavior, and reset state.
 - Analytics derives immutable facts/ impact facts from snapshots; Insights derive deterministic text from validated facts. Neither may mutate simulation state.

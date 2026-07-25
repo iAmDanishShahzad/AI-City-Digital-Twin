@@ -340,6 +340,85 @@ This document records completed project reviews. Add a new entry after every fut
 - `npm run format:check`
 - `npm audit --omit=dev`
 
+## Review After M04 Baseline District Projection and Scene Implementation
+
+**Date:** 2026-07-25
+
+**Reviewed by:** Codex GPT-5.6
+
+**Outcome:** Approved with follow-up
+
+**Approved:** Yes
+
+**Issues:** The automated browser bridge could not initialize because the local sandbox denied access to its browser profile path. This prevented an automated visual inspection, not a build or application failure.
+
+**Follow-up:** Open the local M04 scene in a desktop browser for a visual framing check before the next visual milestone. Continue with M05 only after confirming the district is fully visible at first load.
+
+### Scope
+
+- Reviewed the M04 presentation projection boundary, static 3D scene, responsive canvas, and camera configuration.
+- Confirmed the renderer receives only `DistrictProjection` data and does not read the district catalog.
+- Ran the required automated quality checks and requested production-only security audit.
+
+### Findings
+
+- The projection includes every catalog node, directed edge, and named area, while producing immutable display-ready values.
+- The scene uses only geometric primitives, ambient and directional lighting, a bounded pixel ratio, and no textures, imported models, animation, or shadows.
+- The local Vite server returned HTTP 200 for the M04 application. The browser bridge itself could not start under the sandbox restriction described above.
+
+### Action
+
+- No M02 or M03 public contracts were changed.
+- Added the static baseline scene and focused projection and canvas-boundary tests.
+
+### Verification
+
+- `npm run typecheck` — passed.
+- `npm run lint` — passed.
+- `npm run test` — 15 tests passed.
+- `npm run build` — passed.
+- `npm audit --omit=dev` — 0 vulnerabilities.
+- Local development server response — HTTP 200.
+
+## Architecture Review After M04 Baseline District Projection and Scene
+
+**Date:** 2026-07-25
+
+**Reviewed by:** Codex GPT-5.6
+
+**Outcome:** Approved with documentation follow-up
+
+**Approved:** Yes
+
+**Issues:** `DEPENDENCY_RULES.md` states that Presentation may depend only on its own code and Core, while `PROJECT_STRUCTURE.md` permits projection code to read public domain contracts. M04 uses the latter, narrowly: `projectDistrict` imports only public district types and `DistrictScene` consumes only `DistrictProjection`.
+
+**Follow-up:** Resolve the documentation wording before a later architectural change. Retain the existing rule that renderers must consume projection data only.
+
+### Scope
+
+- Reviewed presentation imports, the district projection, the static scene, performance choices, and M05-scope leakage.
+- Re-ran the M04 local verification suite.
+
+### Findings
+
+- The renderer has no district, simulation, routing, scenario, analytics, or insight import; it receives `DistrictProjection` only.
+- `App` is the composition point that supplies the immutable catalog to `projectDistrict`; the scene never receives `centralDistrictDefinition`.
+- The scene contains only a ground plane, roads, intersection markers, two landmark blocks, ambient and directional lighting, and orbit controls. It contains no texture, imported model, animation, or shadow work.
+- The pixel ratio is capped at 1.5 and geometry is bounded to the small M03 graph. No M05 route selection, pathfinding, vehicle movement, closure behavior, congestion, analytics, or insight behavior was added.
+
+### Action
+
+- No source or package changes were required by this review.
+
+### Verification
+
+- `npm run typecheck` — passed.
+- `npm run lint` — passed.
+- `npm run test` — 15 tests passed.
+- `npm run format:check` — passed.
+- `npm run build` — passed.
+- `npm audit --omit=dev` — 0 vulnerabilities.
+
 ## Future Review Entry Template
 
 Copy this structure for every future review:

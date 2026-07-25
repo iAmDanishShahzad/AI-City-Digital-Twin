@@ -22,3 +22,10 @@
 - Added typed catalog validation for graph limits, references, identifiers, vehicle/probe definitions, and the required alternate-route demonstration.
 - Added deterministic catalog validation tests.
 - Added an ASCII district-graph reference for future routing and scenario verification.
+
+## M04 - Baseline District Projection and Scene
+
+- Added an immutable district-to-presentation projection that separates the renderer from the district catalog.
+- Added a responsive static 3D district scene with geometric roads, intersections, landmarks, lighting, and orbit camera controls.
+- Added focused projection and canvas-boundary component tests.
+- Verified production build, type checking, linting, formatting, tests, and the production-only dependency audit.

@@ -19,10 +19,6 @@ This document tracks intentionally postponed work. Record deferred items here ra
 
 **Mitigation:** The affected packages are omitted from a production install and process local repository file patterns rather than application runtime input. Do not run the forced audit fix during active MVP development.
 
-### Rendering
-
-**Reason:** The 3D district and scene rendering begin in M04. M01 and M02 establish tooling and domain contracts only.
-
 ### Routing and Simulation Behavior
 
 **Reason:** Deterministic route selection, vehicle lifecycle, and congestion behavior are scheduled for M05 through M07 after the district catalog is available.

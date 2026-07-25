@@ -102,3 +102,41 @@ This document records completed implementation activities in a review-friendly f
 
 - Weighted route selection and tie breaking (M05).
 - Simulation, congestion, road-closure behavior, analytics, insights, and rendering.
+
+## M04 - Baseline District Projection and Scene
+
+### Files Created
+
+- `src/presentation/projection/district-projection.ts` — immutable district-to-view projection and typed projection failures.
+- `src/presentation/projection/district-projection.test.ts` — projection completeness and failure tests.
+- `src/presentation/scene/DistrictScene.tsx` — static district canvas, ground, roads, intersections, landmarks, lighting, and camera controls.
+- `src/presentation/scene/DistrictScene.module.css` — responsive scene container styles.
+- `src/presentation/scene/DistrictScene.test.tsx` — canvas-boundary component test.
+- `src/presentation/index.ts` — public presentation module entry point.
+
+### Files Modified
+
+- `src/app/App.tsx` — composes the immutable district catalog with its presentation projection and static scene.
+- `src/app/App.module.css` — provides the responsive baseline-scene shell.
+- `src/app/App.test.tsx` — verifies the static baseline view is composed by the application shell.
+- `docs/CHANGELOG.md` — added the M04 changelog entry.
+- `docs/KNOWN_ISSUES.md` — removed the completed rendering deferral.
+
+### Public APIs Added
+
+- `projectDistrict`
+- `DistrictProjection`
+- `DistrictProjectionError`
+- `DistrictScene`
+
+### Tests Added
+
+- Projection includes every catalog node, edge, and named area as display-ready output.
+- Projection returns a typed failure for an unpositioned node.
+- The scene mounts through its canvas boundary without component errors in the test environment.
+
+### Deferred Until Later Milestones
+
+- Routing, vehicle movement, simulation, congestion, and road-closure behavior.
+- Dynamic vehicles, congestion indicators, and closure markers (M09).
+- Analytics, insights, and scenario controls.

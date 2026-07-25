@@ -1,0 +1,6 @@
+.scene {
+  min-height: min(72vh, 42rem);
+  overflow: hidden;
+  border: 1px solid #93c5fd;
+  border-radius: 1rem;
+}
