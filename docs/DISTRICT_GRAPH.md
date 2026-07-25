@@ -62,6 +62,7 @@ Paired labels represent two directed edges between the same nodes. The exact dir
 
 > [!NOTE]
 > **If Mermaid does not render in a viewer, use the directed-edge table below as the canonical reference.**
+
 ## Node IDs
 
 | Short label | Node ID |
