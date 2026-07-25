@@ -4,6 +4,21 @@ This document tracks intentionally postponed work. Record deferred items here ra
 
 ## Deferred
 
+### Toolchain Advisory: brace-expansion
+
+**Status:** Deferred
+
+**Affected packages:**
+
+- `eslint` (transitive path: `eslint` → `minimatch` → `brace-expansion`)
+- `typescript-eslint` (transitive path: `@typescript-eslint/typescript-estree` → `minimatch` → `brace-expansion`)
+
+**Reason:** The affected packages are development-only tooling. The available automated remediation is `npm audit fix --force`, which upgrades ESLint to a new major version and may disrupt the active linting configuration during the hackathon.
+
+**Resolution:** Revisit after M14, when the MVP is feature-complete and stable. Create a `dependency-updates` branch, upgrade the linting toolchain, resolve any configuration changes, run the full quality suite, and merge only if every check passes.
+
+**Mitigation:** The affected packages are omitted from a production install and process local repository file patterns rather than application runtime input. Do not run the forced audit fix during active MVP development.
+
 ### Rendering
 
 **Reason:** The 3D district and scene rendering begin in M04. M01 and M02 establish tooling and domain contracts only.

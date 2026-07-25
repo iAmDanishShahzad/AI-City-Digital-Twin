@@ -49,7 +49,7 @@ This document records completed project reviews. Add a new entry after every fut
 
 ### Scope
 
-- Searched source and configuration for typed `any`, `TODO`, `FIXME`, and `XXX` markers.
+- Searched source and configuration for typed `any` and unfinished-work markers.
 - Reviewed dependencies for M01 necessity.
 - Checked the created source folders against `PROJECT_STRUCTURE.md`.
 
@@ -114,7 +114,7 @@ This document records completed project reviews. Add a new entry after every fut
 
 ### Scope
 
-- Searched source and configuration for typed `any`, `TODO`, `FIXME`, and `XXX` markers.
+- Searched source and configuration for typed `any` and unfinished-work markers.
 - Reviewed dependencies against completed M01 and M02 scope.
 - Checked all created domain-model folders against `PROJECT_STRUCTURE.md`.
 
@@ -131,6 +131,73 @@ This document records completed project reviews. Add a new entry after every fut
 ### Verification
 
 - Typecheck, lint, test run, and production build passed after cleanup.
+
+## Code Review After M02 Documentation Updates
+
+**Date:** 2026-07-25
+
+**Reviewed by:** Codex GPT-5.6
+
+**Outcome:** Approved
+
+**Approved:** Yes
+
+**Issues:** Historical review-log prose contained literal unfinished-work marker names, creating false positives in project-wide scans.
+
+**Follow-up:** Proceed to M03. Record future deferred work in `KNOWN_ISSUES.md` and future reviews in this log.
+
+### Scope
+
+- Searched source and configuration for typed `any` and unfinished-work markers.
+- Reviewed dependencies against completed M01 and M02 scope.
+- Checked current source folders against `PROJECT_STRUCTURE.md`.
+
+### Findings
+
+- No typed `any` or unfinished-work markers remain in the project.
+- All configured dependencies are required by the M01 toolchain or its active M02 test and type contracts.
+- All current source folders match documented module boundaries.
+
+### Action
+
+- Replaced the historical literal marker names in this log with a generic description to keep future scans accurate.
+
+### Verification
+
+- The project-wide marker scan produced no source or configuration violations.
+
+## Toolchain Security Advisory Review After M02
+
+**Date:** 2026-07-25
+
+**Reviewed by:** Codex GPT-5.6
+
+**Outcome:** Approved with follow-up
+
+**Approved:** Yes
+
+**Issues:** `npm audit` reports five high-severity transitive advisories for development-only `brace-expansion` packages via ESLint and the TypeScript ESLint parser toolchain.
+
+**Follow-up:** Do not run `npm audit fix --force` during active MVP development. Re-evaluate supported updates after M14, as recorded in `KNOWN_ISSUES.md`.
+
+### Scope
+
+- Reviewed `package.json`, `package-lock.json`, `npm audit` output, and `npm ls brace-expansion` output.
+
+### Findings
+
+- The vulnerable paths are reachable only through direct development dependencies: ESLint and `typescript-eslint`.
+- The runtime dependency set contains only React and React DOM.
+- The audit tool reports no supported non-breaking automatic remediation; its offered fix upgrades ESLint to a new major version.
+
+### Action
+
+- No package or lockfile change was made.
+- Added the advisory to `KNOWN_ISSUES.md` with its mitigation and deferral rationale.
+
+### Verification
+
+- Confirmed the lockfile marks both vulnerable dependency paths as development-only.
 
 ## Future Review Entry Template
 
