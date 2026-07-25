@@ -9,7 +9,7 @@ This stack is deliberately small, local-first, and suited to one developer build
 | Programming language | TypeScript |
 | Frontend | React |
 | Build tool | Vite |
-| 3D rendering | Three.js with React Three Fiber |
+| 3D rendering | Three.js with React Three Fiber and Drei |
 | Styling | CSS Modules and CSS custom properties |
 | State | React `useReducer` and Context |
 | Routing | No routing library |
@@ -52,12 +52,14 @@ This stack is deliberately small, local-first, and suited to one developer build
 
 ## 4. 3D Rendering
 
-**Selected: Three.js with React Three Fiber**
+**Selected: Three.js with React Three Fiber and Drei**
 
 - **Purpose:** Render the 3D district, roads, vehicles, scenario markers, lighting, and camera interactions.
-- **Why it was chosen:** Three.js is established by the project direction. React Three Fiber keeps 3D scene composition aligned with the component model while retaining access to the underlying renderer when needed.
-- **Alternatives considered:** Direct Three.js integration, Babylon.js, and a 2D map or canvas renderer.
-- **Why alternatives were rejected:** Direct integration would require more manual lifecycle coordination; Babylon.js adds a new engine without a clear MVP advantage; 2D rendering does not meet the project requirement for a 3D district.
+- **Why it was chosen:** Three.js is established by the project direction. React Three Fiber keeps 3D scene composition aligned with the component model while retaining access to the underlying renderer when needed. Drei supplies a small set of maintained React Three Fiber helpers when they reduce M04 scene setup or interaction boilerplate.
+- **Alternatives considered:** Direct Three.js integration, hand-built React Three Fiber helpers, Babylon.js, and a 2D map or canvas renderer.
+- **Why alternatives were rejected:** Direct integration would require more manual lifecycle coordination; hand-built helpers would duplicate well-scoped utilities without an MVP benefit; Babylon.js adds a new engine without a clear MVP advantage; 2D rendering does not meet the project requirement for a 3D district.
+
+Use Drei only for scene primitives or controls that directly support the MVP. It must not introduce routing, simulation, analytics, or presentation business logic.
 
 ## 5. Styling
 
