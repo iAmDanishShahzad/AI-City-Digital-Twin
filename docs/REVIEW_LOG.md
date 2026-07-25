@@ -299,6 +299,47 @@ This document records completed project reviews. Add a new entry after every fut
 
 - Confirmed the project-wide marker scan returned no matches.
 
+## Milestone Verification Review After M03
+
+**Date:** 2026-07-25
+
+**Reviewed by:** Codex GPT-5.6
+
+**Outcome:** Approved
+
+**Approved:** Yes
+
+**Issues:** None.
+
+**Follow-up:** Proceed to M04 or M05 in milestone order; retain the graph reference as the routing verification baseline.
+
+### Scope
+
+- Ran the full local M01–M03 verification suite.
+- Reviewed the Central District topology, closable edge, alternate route, vehicle schedule, probes, and Mermaid graph reference.
+
+### Findings
+
+- The project builds, typechecks, lints, formats, and tests successfully; all 12 tests pass.
+- The production-only audit reports zero vulnerabilities.
+- The district has 8 nodes, 16 directed edges, exactly one closable edge, and 10 vehicles with fixed spawn ticks from 0 through 27.
+- The north-gate to east-hub main route uses the closable edge and has a longer viable alternate through riverside and warehouse.
+- The emergency probe is affected by the closure path while the delivery probe supplies a valid unaffected comparison route; both outcomes are appropriate simulation proxies.
+- The Mermaid graph matches the catalog's nodes, road edges, closable edge, and probes.
+
+### Action
+
+- No changes required.
+
+### Verification
+
+- `npm run build`
+- `npm run typecheck`
+- `npm run lint`
+- `npm run test`
+- `npm run format:check`
+- `npm audit --omit=dev`
+
 ## Future Review Entry Template
 
 Copy this structure for every future review:
