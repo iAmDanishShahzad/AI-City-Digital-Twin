@@ -2,14 +2,14 @@ import type { DistrictDefinition } from '../model/district-definition';
 import { districtConstraints } from './district-constraints';
 
 const centralNodes = Object.freeze([
-  Object.freeze({ id: 'north-gate', position: Object.freeze({ x: 0, y: 0, z: -12 }) }),
-  Object.freeze({ id: 'civic-square', position: Object.freeze({ x: 0, y: 0, z: 0 }) }),
-  Object.freeze({ id: 'market', position: Object.freeze({ x: 12, y: 0, z: 0 }) }),
-  Object.freeze({ id: 'hospital', position: Object.freeze({ x: 24, y: 0, z: 0 }) }),
-  Object.freeze({ id: 'south-gate', position: Object.freeze({ x: 0, y: 0, z: 12 }) }),
-  Object.freeze({ id: 'riverside', position: Object.freeze({ x: 12, y: 0, z: 12 }) }),
-  Object.freeze({ id: 'warehouse', position: Object.freeze({ x: 24, y: 0, z: 12 }) }),
-  Object.freeze({ id: 'east-hub', position: Object.freeze({ x: 36, y: 0, z: 6 }) }),
+  Object.freeze({ id: 'north-gate', position: Object.freeze({ x: 0, y: 0, z: -20 }) }),
+  Object.freeze({ id: 'civic-square', position: Object.freeze({ x: 0, y: 0, z: -8 }) }),
+  Object.freeze({ id: 'market', position: Object.freeze({ x: 12, y: 0, z: -8 }) }),
+  Object.freeze({ id: 'hospital', position: Object.freeze({ x: 24, y: 0, z: -8 }) }),
+  Object.freeze({ id: 'south-gate', position: Object.freeze({ x: 0, y: 0, z: 10 }) }),
+  Object.freeze({ id: 'riverside', position: Object.freeze({ x: 12, y: 0, z: 10 }) }),
+  Object.freeze({ id: 'warehouse', position: Object.freeze({ x: 24, y: 0, z: 10 }) }),
+  Object.freeze({ id: 'east-hub', position: Object.freeze({ x: 36, y: 0, z: -8 }) }),
 ]);
 
 const centralEdges = Object.freeze([
@@ -226,12 +226,12 @@ export const centralDistrictDefinition = Object.freeze({
       Object.freeze({
         id: 'civic-core',
         label: 'Civic Core',
-        position: Object.freeze({ x: 4, y: 0, z: 2 }),
+        position: Object.freeze({ x: 6, y: 0, z: -3 }),
       }),
       Object.freeze({
         id: 'riverside-quarter',
         label: 'Riverside Quarter',
-        position: Object.freeze({ x: 18, y: 0, z: 12 }),
+        position: Object.freeze({ x: 18, y: 0, z: 4 }),
       }),
     ]),
   }),

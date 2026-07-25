@@ -21,11 +21,13 @@
 - Added deterministic baseline vehicles, named areas, and emergency and delivery probes.
 - Added typed catalog validation for graph limits, references, identifiers, vehicle/probe definitions, and the required alternate-route demonstration.
 - Added deterministic catalog validation tests.
-- Added an ASCII district-graph reference for future routing and scenario verification.
+- Added a Mermaid district-graph reference for future routing and scenario verification.
 
 ## M04 - Baseline District Projection and Scene
 
 - Added an immutable district-to-presentation projection that separates the renderer from the district catalog.
 - Added a responsive static 3D district scene with geometric roads, intersections, landmarks, lighting, and orbit camera controls.
+- Refined the fictional district layout with a north-up camera, readable node and landmark labels, primary/alternative road hierarchy, and a compact gridded city block.
+- Aligned the static scene coordinates with `DISTRICT_GRAPH.md`: the documented main corridor is straight and the documented alternative route is visibly distinct.
 - Added focused projection and canvas-boundary component tests.
 - Verified production build, type checking, linting, formatting, tests, and the production-only dependency audit.

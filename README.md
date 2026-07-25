@@ -1,12 +1,12 @@
 # AI City Digital Twin
 
-An open-source, AI-powered urban planning simulator for exploring the consequences of change in a 3D city district.
+An open-source, deterministic urban-planning simulator for exploring the consequences of change in a fictional 3D city district.
 
-> **Project status:** Active development. This repository is establishing the foundation for a hackathon-quality, production-minded demonstration.
+> **Project status:** Active development. M01–M04 are complete: the project has a strict toolchain, typed domain contracts, a validated Central District graph, and a static north-up 3D baseline scene.
 
 ## Project overview
 
-AI City Digital Twin is an interactive experience for testing urban "what-if" scenarios before they happen in the real world. It will model a small city district in 3D, simulate changing conditions in real time, and present clear, AI-generated explanations of their likely effects.
+AI City Digital Twin is an interactive experience for testing urban "what-if" scenarios before they happen in the real world. It models a small city district in 3D, will simulate changing conditions in deterministic logical ticks, and will present clear, grounded explanations of simulated effects.
 
 The project is designed to make complex urban systems easier to explore for both technical and non-technical users, while demonstrating thoughtful simulation design and maintainable software engineering.
 
@@ -16,16 +16,14 @@ Urban disruptions, such as road or bridge closures, flooding, construction, and 
 
 ## Proposed solution
 
-AI City Digital Twin will provide an interactive 3D environment where users can introduce a scenario, observe traffic update in real time, and receive intelligent explanations of the resulting impacts. The goal is a clear, approachable way to investigate trade-offs and support better-informed planning conversations.
+AI City Digital Twin provides a read-only baseline district view today and will provide an interactive 3D environment where users can introduce the supported road-closure scenario, observe deterministic traffic changes, and receive a grounded explanation of the resulting simulated impacts.
 
 ## Key features
 
-- Interactive 3D simulation of a small city district
-- Configurable what-if scenarios, including bridge and road closures, flooding, construction, and accidents
-- Real-time traffic updates in response to scenario changes
-- Analysis of impacts on traffic flow, emergency response, and delivery logistics
-- AI-generated explanations that translate simulation outcomes into understandable insights
-- An intuitive experience for non-technical users
+- **Available now:** A validated fictional Central District with eight nodes, 16 directed edges, one closable edge, named areas, deterministic vehicle definitions, and a north-up static 3D scene.
+- **Available now:** A presentation projection that keeps the rendering layer separate from immutable district data.
+- **Planned MVP:** One road-closure scenario, deterministic vehicle movement and rerouting, congestion indicators, impact metrics, and deterministic insight templates.
+- **Future enhancements:** Bridge closure, flooding, road construction, accident scenarios, and variable vehicle types.
 
 ## Why this project matters
 
@@ -58,15 +56,17 @@ Simulation engine --> Impact analysis --> AI-generated insights
 
 This separation is intended to keep the experience responsive, make major features independently testable, and allow the simulation, visualization, and insight-generation concerns to evolve without unnecessary coupling.
 
-## Planned technology stack
+## Technology stack
 
-The following technologies are currently established by the project direction:
+The current MVP stack is deliberately small and local-first:
 
-- **TypeScript** with strict typing for maintainable application code
-- **React** with functional components for the user interface
-- **Three.js** for 3D rendering and visualization
+- **TypeScript** with strict typing
+- **React** and **Vite**
+- **Three.js**, **React Three Fiber**, and **Drei** for the 3D scene
+- **CSS Modules**, **ESLint**, **Prettier**, **Vitest**, and Testing Library
+- **npm** and Git
 
-Other technologies, services, and deployment choices are intentionally undecided and will be documented here once selected.
+See [TECH_STACK.md](docs/TECH_STACK.md) for the complete selection rationale and intentional exclusions.
 
 ## Development methodology
 
@@ -81,23 +81,33 @@ Development follows an incremental, quality-focused approach:
 
 ## Folder structure
 
-The repository structure has not yet been finalized. It will be documented here as the project foundation is created.
+The project uses a domain-first layout. Only currently implemented directories are shown:
 
 ```text
 AI-City-Digital-Twin/
-|-- [application source - planned]
-|-- [tests - planned]
+|-- src/
+|   |-- app/                 # composition and application state
+|   |-- core/                # shared result, error, and identifier contracts
+|   |-- district/            # immutable Central District catalog and validation
+|   |-- presentation/        # projection and static 3D scene
+|   |-- analytics/           # contracts only; rules arrive later
+|   |-- insights/            # contracts only; templates arrive later
+|   |-- scenarios/           # contracts only; catalog/effects arrive later
+|   |-- simulation/          # contracts only; engine arrives later
+|   `-- test/                # shared test setup
 |-- docs/
 `-- README.md
 ```
 
+See [PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md) for module boundaries, naming, imports, and future expansion rules.
+
 ## Current project status
 
-The project is in its early foundation phase. The product vision and engineering principles are defined; implementation details, the complete architecture, repository structure, and additional technology decisions are still being planned.
+The application currently displays the static, graph-aligned Central District. Routing, vehicle movement, simulation, congestion, the road-closure scenario, analytics, insights, and controls remain intentionally deferred to later milestones.
 
 ## Future roadmap
 
-Planned work will progress from a foundational 3D city district through scenario controls, real-time traffic simulation, impact analysis, and AI-generated explanations. Each milestone will be implemented and verified independently, with roadmap details added as they are decided.
+Next, the project will implement deterministic route selection, fixed-tick vehicle lifecycle, congestion, the road-closure scenario, visible traffic, analytics, and deterministic insights. A presentation-only visual-polish task is reserved after core scenario behavior is complete and before traffic is connected to the scene. See [MILESTONES.md](docs/MILESTONES.md) and [ROADMAP.md](docs/ROADMAP.md).
 
 ## License
 

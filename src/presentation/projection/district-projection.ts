@@ -2,10 +2,15 @@ import type { Result } from '@/core';
 import type { DistrictDefinition, DistrictPosition } from '@/district';
 
 const roadLaneOffset = 0.28;
-const roadWidth = 1.1;
 const minimumRoadLength = 0.01;
 const landmarkBaseHeight = 3.25;
 const landmarkHeightStep = 0.8;
+const primaryRoadCapacity = 3;
+const primaryRoadWidth = 2.1;
+const secondaryRoadWidth = 1.5;
+const landmarkColors = ['#2563eb', '#0f766e'] as const;
+
+export type RoadVisualCategory = 'primary' | 'secondary';
 
 export type ProjectedPosition = {
   readonly x: number;
@@ -15,6 +20,7 @@ export type ProjectedPosition = {
 
 export type ProjectedIntersection = {
   readonly id: string;
+  readonly label: string;
   readonly position: ProjectedPosition;
 };
 
@@ -24,6 +30,7 @@ export type ProjectedRoad = {
   readonly length: number;
   readonly rotationY: number;
   readonly width: number;
+  readonly category: RoadVisualCategory;
 };
 
 export type ProjectedLandmark = {
@@ -31,6 +38,7 @@ export type ProjectedLandmark = {
   readonly label: string;
   readonly position: ProjectedPosition;
   readonly height: number;
+  readonly color: string;
 };
 
 export type DistrictProjection = {
@@ -82,7 +90,7 @@ export function projectDistrict(
       };
     }
 
-    const road = projectRoad(edge.id, edge.fromNodeId, edge.toNodeId, from, to);
+    const road = projectRoad(edge.id, edge.fromNodeId, edge.toNodeId, edge.capacity, from, to);
 
     if (road === undefined) {
       return {
@@ -105,6 +113,7 @@ export function projectDistrict(
         district.nodes.map((node) =>
           Object.freeze({
             id: node.id,
+            label: formatLabel(node.id),
             position: copyPosition(node.position),
           }),
         ),
@@ -117,6 +126,7 @@ export function projectDistrict(
             label: area.label,
             position: copyPosition(area.position),
             height: landmarkBaseHeight + index * landmarkHeightStep,
+            color: landmarkColors[index % landmarkColors.length],
           }),
         ),
       ),
@@ -128,6 +138,7 @@ function projectRoad(
   id: string,
   fromNodeId: string,
   toNodeId: string,
+  capacity: number,
   from: DistrictPosition,
   to: DistrictPosition,
 ): ProjectedRoad | undefined {
@@ -142,6 +153,7 @@ function projectRoad(
   const directionOffset = fromNodeId < toNodeId ? roadLaneOffset : -roadLaneOffset;
   const perpendicularX = (-deltaZ / length) * directionOffset;
   const perpendicularZ = (deltaX / length) * directionOffset;
+  const category: RoadVisualCategory = capacity >= primaryRoadCapacity ? 'primary' : 'secondary';
 
   return Object.freeze({
     id,
@@ -152,8 +164,16 @@ function projectRoad(
     }),
     length,
     rotationY: Math.atan2(deltaZ, deltaX),
-    width: roadWidth,
+    width: category === 'primary' ? primaryRoadWidth : secondaryRoadWidth,
+    category,
   });
+}
+
+function formatLabel(identifier: string): string {
+  return identifier
+    .split('-')
+    .map((word) => `${word[0].toUpperCase()}${word.slice(1)}`)
+    .join(' ');
 }
 
 function copyPosition(position: DistrictPosition | undefined): ProjectedPosition {

@@ -48,4 +48,16 @@ Ensures reliable offline demos and avoids external AI dependencies while remaini
 
 ---
 
+## ADR-005: Projection-Only Rendering
+
+Status: Accepted
+
+Decision:
+The rendering scene consumes immutable presentation projection objects only. Public immutable district contracts may be read while creating a projection, but rendering components must not read or mutate domain objects directly.
+
+Reason:
+This keeps 3D concerns separate from domain behavior, makes scene tests and future dynamic traffic updates safer, and prevents rendering state from becoming a source of truth.
+
+---
+
 **Rule going forward:** Every significant architectural change gets a new ADR entry. Never silently change the architecture.

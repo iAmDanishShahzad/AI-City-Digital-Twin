@@ -4,6 +4,10 @@ This document tracks intentionally postponed work. Record deferred items here ra
 
 ## Deferred
 
+### M04 Visual Polish
+
+**Reason:** Further camera, spacing, hierarchy, and label refinements are more useful once M08 supplies completed scenario behavior and M09 shows moving traffic. The scoped presentation-only task is recorded in `BACKLOG.md`.
+
 ### Toolchain Advisory: brace-expansion
 
 **Status:** Deferred

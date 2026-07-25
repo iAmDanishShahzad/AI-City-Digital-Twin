@@ -3,6 +3,7 @@
 | Term | Definition |
 | --- | --- |
 | Analytics | Derived metrics calculated from simulation state. |
+| Alternative route | The documented path used when the primary corridor cannot be used. |
 | Application | The layer that orchestrates user intents and domain use cases. |
 | Baseline | The normal-state simulation used for same-tick comparison with a scenario. |
 | Congestion multiplier | The occupancy-derived value that increases route cost and reduces vehicle speed. |
@@ -14,6 +15,8 @@
 | Insight | Deterministic natural-language explanation generated from validated analytics. |
 | Node | Road intersection, origin, or destination. |
 | Presentation | The layer that renders projection data and emits user intent. |
+| Projection | Immutable display-ready data derived from public domain contracts for rendering. |
+| Primary corridor | The normal North Gate-to-East Hub route through Civic Square, Market, and Hospital. |
 | Probe | A non-visible route used only to calculate an access proxy. |
 | Route | Ordered list of edges from origin to destination. |
 | Road closure | The MVP scenario that prevents new entry to one configured edge. |

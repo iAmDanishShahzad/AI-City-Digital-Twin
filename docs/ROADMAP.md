@@ -55,9 +55,9 @@ Each phase is a gate. Do not expand scope or begin the next phase's non-essentia
 **Deliverables:**
 
 - One compact fictional district catalog with a small weighted road graph, named areas, and baseline vehicle definitions.
-- A clear 3D scene containing roads, simple landmarks or blocks, vehicles, camera framing, and basic lighting.
-- A presentation projection that maps immutable district data and baseline vehicle state into render-ready data.
-- A normal-state view that is understandable at a glance and contains visible, continuous vehicle movement.
+- A clear static 3D scene containing roads, simple landmarks or blocks, camera framing, and basic lighting.
+- A presentation projection that maps immutable district data into render-ready data.
+- A normal-state view that is understandable at a glance before dynamic traffic is connected in a later phase.
 - Tests for district catalog validity and presentation projection of baseline state.
 
 **Dependencies:**
@@ -73,8 +73,7 @@ Each phase is a gate. Do not expand scope or begin the next phase's non-essentia
 **Exit Criteria:**
 
 - A viewer can identify the main route and at least one alternate route within 30 seconds.
-- Vehicles move predictably through the normal-state scene.
-- Static district rendering is separated from dynamic vehicle updates.
+- Static district rendering is separated from later dynamic vehicle updates.
 - The normal view runs smoothly on the demonstration machine and remains within the project's initial-load target.
 
 ## Phase 3: Deterministic Traffic and Scenario Engine

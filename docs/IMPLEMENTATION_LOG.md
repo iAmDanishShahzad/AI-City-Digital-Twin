@@ -78,7 +78,7 @@ This document records completed implementation activities in a review-friendly f
 - `src/district/catalog/validate-district-definition.ts` — typed, non-throwing catalog validation.
 - `src/district/catalog/validate-district-definition.test.ts` — catalog validation tests.
 - `src/district/model/district-validation.ts` — validation error contracts.
-- `docs/DISTRICT_GRAPH.md` — ASCII graph, edge, closable-edge, and probe reference.
+- `docs/DISTRICT_GRAPH.md` — Mermaid graph, edge, closable-edge, and probe reference.
 
 ### Files Modified
 
@@ -119,6 +119,10 @@ This document records completed implementation activities in a review-friendly f
 - `src/app/App.tsx` — composes the immutable district catalog with its presentation projection and static scene.
 - `src/app/App.module.css` — provides the responsive baseline-scene shell.
 - `src/app/App.test.tsx` — verifies the static baseline view is composed by the application shell.
+- `src/district/catalog/central-district.ts` — refined only the immutable display coordinates to create a balanced north-up district layout; graph topology and simulation values are unchanged.
+- The display coordinates now mirror `DISTRICT_GRAPH.md`: `NG → CS → MK → HP → EH` forms the straight primary corridor, while `CS → RV → WH → EH` forms the distinct alternative path.
+- `src/presentation/projection/district-projection.ts` — added display labels and presentational primary/secondary road categories.
+- `src/presentation/scene/DistrictScene.tsx` and `DistrictScene.module.css` — added node and landmark labels, road hierarchy styling, a compact gridded ground plane, north-up camera framing, and a non-overlapping legend.
 - `docs/CHANGELOG.md` — added the M04 changelog entry.
 - `docs/KNOWN_ISSUES.md` — removed the completed rendering deferral.
 
@@ -134,6 +138,8 @@ This document records completed implementation activities in a review-friendly f
 - Projection includes every catalog node, edge, and named area as display-ready output.
 - Projection returns a typed failure for an unpositioned node.
 - The scene mounts through its canvas boundary without component errors in the test environment.
+- The local browser preview confirms that the full labelled district is visible in one frame with no console errors.
+- Projection tests lock the north-up main-corridor and alternative-route display layout to the documented graph reference.
 
 ### Deferred Until Later Milestones
 

@@ -246,7 +246,11 @@ Names must describe domain intent rather than a temporary implementation detail.
 | `TECH_STACK.md` | Selected MVP technologies and intentional exclusions. |
 | `PROJECT_STRUCTURE.md` | Directory, dependency, naming, and module-boundary rules. |
 | `DECISIONS.md` | Short, dated records of material decisions and their rationale. |
+| `DEPENDENCY_RULES.md` | Allowed layer dependencies and code-review import checks. |
 | `GLOSSARY.md` | Shared domain vocabulary used consistently across code and documentation. |
+| `DISTRICT_GRAPH.md` | Canonical Central District node, directed-edge, probe, and closable-edge reference. |
+| `BACKLOG.md` and `KNOWN_ISSUES.md` | Intentionally deferred work and scoped follow-up tasks. |
+| `CHANGELOG.md`, `IMPLEMENTATION_LOG.md`, and `REVIEW_LOG.md` | Completed milestone, implementation, and review history. |
 | `ROADMAP.md` and `MILESTONES.md` | Ordered delivery scope and verification checkpoints. |
 
 Update the applicable document in the same change as any material change to scope, architecture, stack, or structure.

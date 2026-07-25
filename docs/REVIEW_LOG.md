@@ -419,6 +419,226 @@ This document records completed project reviews. Add a new entry after every fut
 - `npm run build` — passed.
 - `npm audit --omit=dev` — 0 vulnerabilities.
 
+## Visual Review After M04 District Scene Refinement
+
+**Date:** 2026-07-26
+
+**Reviewed by:** Codex GPT-5.6
+
+**Outcome:** Approved
+
+**Approved:** Yes
+
+**Issues:** The original M04 frame was too conservative, visually diagonal, lacked readable area context, and did not distinguish primary and alternative roads.
+
+**Follow-up:** Proceed to M05 without adding visual traffic behavior before M09.
+
+### Scope
+
+- Reviewed the live local scene against camera framing, cardinal orientation, road hierarchy, labels, ground treatment, and M04 scope.
+
+### Findings
+
+- The full eight-node district now appears in one compact 4:3 frame with North Gate at the top, South Gate at the bottom, and East Hub at the right.
+- Dark-blue primary roads and teal alternative streets provide immediate visual hierarchy.
+- Every node has a readable label; both named-area landmarks have labels; the legend no longer covers district content.
+- The scene remains lightweight: simple geometry, a grid helper, no textures, imported models, animation, shadows, vehicles, routing, simulation, congestion, analytics, or insight behavior.
+
+### Action
+
+- Refined only display coordinates and presentation projection/scene data. Graph topology, vehicle roster, simulation rules, and public M02/M03 contracts remain unchanged.
+
+### Verification
+
+- Local browser preview displayed the full district in one frame.
+- Browser console error check returned no errors.
+
+## Graph-Alignment Review After M04 District Scene Redefinition
+
+**Date:** 2026-07-26
+
+**Reviewed by:** Codex GPT-5.6
+
+**Outcome:** Approved
+
+**Approved:** Yes
+
+**Issues:** The previous visual layout made the documented main corridor and alternative route less immediately comparable with `DISTRICT_GRAPH.md`.
+
+**Follow-up:** Keep future traffic and closure visuals anchored to this graph-aligned layout.
+
+### Scope
+
+- Compared the eight node positions and all 16 rendered edge projections with the canonical directed-edge table in `DISTRICT_GRAPH.md`.
+
+### Findings
+
+- The north-up main corridor is visually ordered as `north-gate → civic-square → market → hospital → east-hub`.
+- The documented alternative route is visually ordered as `civic-square → riverside → warehouse → east-hub`.
+- South-gate, market-to-riverside, warehouse-to-hospital, and east-hub-to-hospital connections remain present; no edge IDs, directions, capacities, vehicle data, or scenario behavior changed.
+
+### Action
+
+- Changed only immutable display coordinates, ground/camera framing, and a projection-layout test. No public contract or simulation rule changed.
+
+### Verification
+
+- Projection test confirms all catalog nodes and edges are included and locks the north-up layout relationship.
+- Local browser preview confirms the full graph-aligned district is visible with no console errors.
+
+## Toolchain Review After M04 Presentation Updates
+
+**Date:** 2026-07-26
+
+**Reviewed by:** Codex GPT-5.6
+
+**Outcome:** Approved
+
+**Approved:** Yes
+
+**Issues:** None.
+
+**Follow-up:** Continue with the documented milestone sequence. Revisit bundle-size optimization only during the planned quality and performance pass if profiling warrants it.
+
+### Scope
+
+- Compared project dependencies, scripts, compiler settings, Vite configuration, ESLint configuration, Prettier configuration, and test setup with `TECH_STACK.md`.
+
+### Findings
+
+- Vite 7 is configured with the React plugin and source alias.
+- React 19, TypeScript 5 with strict application settings, Three.js, React Three Fiber, Drei, and `@types/three` match the selected rendering stack.
+- ESLint 9 with TypeScript and React rules, Prettier 3, and Vitest 3 with Testing Library and JSDOM match the documented quality stack.
+- npm is the active package manager; no routing, state-management, enterprise, cloud, mapping, physics, or external AI dependency has been introduced.
+
+### Action
+
+- No dependency or configuration change was required.
+
+### Verification
+
+- `npm ls --depth=0` — installed top-level packages match the selected stack.
+- `npm run typecheck` — passed.
+- `npm run lint` — passed.
+- `npm run test` — 16 tests passed.
+- `npm run format:check` — passed.
+- `npm run build` — passed.
+- `npm audit --omit=dev` — 0 vulnerabilities.
+
+## Code Review After M04 Graph-Aligned Presentation
+
+**Date:** 2026-07-26
+
+**Reviewed by:** Codex GPT-5.6
+
+**Outcome:** Approved
+
+**Approved:** Yes
+
+**Issues:** None.
+
+**Follow-up:** Continue the milestone sequence. Keep the M04 rendering packages because they are now active runtime dependencies.
+
+### Scope
+
+- Searched project source, documentation, and configuration for typed `any` and unfinished-work markers.
+- Reviewed the manifest and installed top-level packages for active scope justification.
+- Compared the current directory tree with `PROJECT_STRUCTURE.md`.
+
+### Findings
+
+- No `:any` pattern or `TODO`, `FIXME`, or `XXX` marker exists outside generated dependency/build directories.
+- React, React DOM, Three.js, React Three Fiber, and Drei are active M04 runtime dependencies.
+- Type definitions, Vite, Vitest, Testing Library, JSDOM, ESLint, TypeScript ESLint, Prettier, and related configuration packages each support the active toolchain or tests.
+- `src/presentation/projection` and `src/presentation/scene` are documented M04 responsibilities. The added `docs/BACKLOG.md` is a durable project-planning document allowed by the documentation structure.
+- `.npm-cache`, `node_modules`, and `dist` are ignored local/generated directories. No undocumented source-domain folder was introduced.
+
+### Action
+
+- No dependency or source-structure change was required.
+
+### Verification
+
+- Repository-wide red-flag scans returned no matches.
+- `npm ls --depth=0` confirmed the installed top-level dependency set.
+
+## Milestone Verification Review After M04
+
+**Date:** 2026-07-26
+
+**Reviewed by:** Codex GPT-5.6
+
+**Outcome:** Approved
+
+**Approved:** Yes
+
+**Issues:** None.
+
+**Follow-up:** Proceed with M05 deterministic route selection. Preserve the current graph as the normal-state and closure-routing verification baseline.
+
+### Scope
+
+- Reviewed M01–M04 deliverables against `MILESTONES.md`, the simulation specification, catalog data, validation logic, projection tests, and the district graph reference.
+- Ran the requested local quality and production-only security checks.
+
+### Findings
+
+- M01 provides the documented Vite, React, TypeScript, ESLint, Prettier, Vitest, and Testing Library foundation.
+- M02 provides strict immutable contracts, typed result/error values, application states, reducer actions, and valid-transition/reset/recovery tests.
+- M03 defines one frozen fictional district with 8 nodes, 16 directed edges, exactly one closable edge (`e02`), 10 deterministic vehicles with spawn ticks from 0 through 27, two valid probes, and typed catalog validation failures.
+- The normal North Gate-to-East Hub corridor is `e01 → e02 → e03 → e04` with a total configured length of 32. Removing the closable `e02` leaves the longer `e01 → e05 → e06 → e07` alternate route with a total configured length of 44.
+- The emergency probe is `north-gate → hospital`; the delivery probe is `south-gate → east-hub`. They match `DISTRICT_GRAPH.md` and remain explicitly illustrative simulation proxies.
+- M04 projects every catalog node, edge, and named area into immutable presentation data. The renderer receives the projection only and shows the graph-aligned north-up normal state without routing, vehicle movement, congestion, closure, analytics, or insight behavior.
+
+### Action
+
+- No implementation correction was required.
+
+### Verification
+
+- `npm run build` — passed.
+- `npm run typecheck` — passed.
+- `npm run lint` — passed.
+- `npm run test` — 16 tests passed.
+- `npm run format:check` — passed.
+- `npm audit --omit=dev` — 0 vulnerabilities.
+
+## Documentation Synchronization After M04
+
+**Date:** 2026-07-26
+
+**Reviewed by:** Codex GPT-5.6
+
+**Outcome:** Updated
+
+**Approved:** Yes
+
+**Issues:** The README, roadmap, terminology, decision history, and documentation index still contained pre-M04 assumptions or incomplete references.
+
+**Follow-up:** Keep documentation synchronized whenever a completed milestone changes delivered behavior, public architecture, or the dependency order.
+
+### Scope
+
+- Compared all authoritative project documents with the current M01–M04 implementation, planned M04 visual-polish backlog task, and `DISTRICT_GRAPH.md`.
+
+### Findings
+
+- The README did not yet describe the implemented toolchain, Central District catalog, projection boundary, or static baseline scene.
+- The roadmap incorrectly described moving vehicles as part of the completed baseline visual phase.
+- The M04 visual-polish task had conflicting timing, and two implementation records referred to the Mermaid graph as ASCII.
+- Projection-only rendering was a material architectural decision not yet recorded as an ADR.
+
+### Action
+
+- Updated the README, roadmap, backlog timing, known-issues reference, changelog, implementation log, glossary, project-structure documentation index, and ADR history.
+- No source, domain, simulation, dependency, or rendering behavior changed.
+
+### Verification
+
+- Documentation consistency scan found no remaining obsolete ASCII or pre-implementation status reference.
+- `git diff --check` — passed.
+- `npm run format:check` — passed.
+
 ## Future Review Entry Template
 
 Copy this structure for every future review:
