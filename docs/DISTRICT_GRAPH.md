@@ -13,39 +13,41 @@ graph LR
     RV["RV<br/>riverside"]
     WH["WH<br/>warehouse"]
 
+    %% Probe paths
+    NG -. Emergency probe .-> HP
+    SG -. Delivery probe .-> EH
+
     NG -->|e01| CS
     CS -->|e02🔒| MK
     MK -->|e03| HP
     HP -->|e04| EH
 
     CS -->|e05| RV
-    MK -->|e12| RV
-    RV -->|e13| MK
     RV -->|e06| WH
     WH -->|e07| EH
 
+    SG -->|e08| CS
+    CS -->|e09| SG
+
     SG -->|e10| RV
     RV -->|e11| SG
+
+    MK -->|e12| RV
+    RV -->|e13| MK
 
     WH -->|e14| HP
     HP -->|e15| WH
 
     EH -->|e16| HP
-    CS -->|e09| SG
-    SG -->|e08| CS
-
-%% Probe paths
-NG -. Emergency probe .-> HP
-SG -. Delivery probe .-> EH
 
 %% e02 = closable edge
-linkStyle 1 stroke:#d627ff,stroke-width:4px
+linkStyle 3 stroke:#d627ff,stroke-width:4px
 
 %% Emergency probe
-linkStyle 16 stroke:#ff0000,stroke-width:3px,stroke-dasharray:8 4
+linkStyle 0 stroke:#ff0000,stroke-width:3px,stroke-dasharray:8 4
 
 %% Delivery probe
-linkStyle 17 stroke:#2cff2c,stroke-width:3px,stroke-dasharray:8 4
+linkStyle 1 stroke:#2cff2c,stroke-width:3px,stroke-dasharray:8 4
 ```
 ### Probes
 
@@ -58,6 +60,7 @@ linkStyle 17 stroke:#2cff2c,stroke-width:3px,stroke-dasharray:8 4
 
 Paired labels represent two directed edges between the same nodes. The exact direction of each edge is listed in the table below.
 
+<span style="color:#c92a2a">**⚠️ NOTE:** If Mermaid does not render in a viewer, use the directed-edge table below as the canonical reference.
 ## Node IDs
 
 | Short label | Node ID |
