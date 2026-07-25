@@ -234,6 +234,71 @@ This document records completed project reviews. Add a new entry after every fut
 - Typecheck, lint, tests, formatting check, and production build passed.
 - `npm audit --omit=dev` reported zero vulnerabilities.
 
+## Toolchain Review After M03 Documentation Updates
+
+**Date:** 2026-07-25
+
+**Reviewed by:** Codex GPT-5.6
+
+**Outcome:** Approved
+
+**Approved:** Yes
+
+**Issues:** None.
+
+**Follow-up:** Proceed according to the milestone plan; add Three.js and React Three Fiber only when M04 rendering begins.
+
+### Scope
+
+- Compared the Vite, React, TypeScript, ESLint, Prettier, Vitest, and Testing Library configuration with `TECH_STACK.md`.
+
+### Findings
+
+- The installed configuration matches the selected M03 toolchain.
+- Three.js and React Three Fiber remain selected but intentionally uninstalled until M04, where they are first required.
+
+### Action
+
+- No configuration changes required.
+
+### Verification
+
+- Confirmed package scripts, Vite test configuration, strict TypeScript settings, ESLint rules, and Prettier configuration.
+
+## Code Review After M03 District Catalog Implementation
+
+**Date:** 2026-07-25
+
+**Reviewed by:** Codex GPT-5.6
+
+**Outcome:** Approved
+
+**Approved:** Yes
+
+**Issues:** None.
+
+**Follow-up:** Proceed according to the milestone plan.
+
+### Scope
+
+- Searched the project for typed `any` and unfinished-work markers.
+- Reviewed all manifest dependencies against M01 toolchain needs and active M02/M03 use.
+- Compared the current source tree with `PROJECT_STRUCTURE.md`.
+
+### Findings
+
+- No typed `any` or unfinished-work markers exist in the project.
+- Every manifest dependency supports the configured Vite, React, TypeScript, test, lint, or formatting toolchain.
+- The source tree contains only documented M01–M03 module directories; no global technology buckets or undocumented source folders were introduced.
+
+### Action
+
+- No package or source-structure changes required.
+
+### Verification
+
+- Confirmed the project-wide marker scan returned no matches.
+
 ## Future Review Entry Template
 
 Copy this structure for every future review:
