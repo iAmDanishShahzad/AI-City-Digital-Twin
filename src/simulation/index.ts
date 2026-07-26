@@ -9,3 +9,10 @@ export type {
   WaitingReason,
   WaitingVehicleState,
 } from './model/simulation-snapshot';
+export { selectShortestRoute } from './routing/shortest-path';
+export type {
+  NoRouteError,
+  RouteSelectionInput,
+  RouteSelectionResult,
+  SelectedRoute,
+} from './routing/shortest-path';

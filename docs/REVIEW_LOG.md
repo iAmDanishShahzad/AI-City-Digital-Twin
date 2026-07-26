@@ -639,6 +639,44 @@ This document records completed project reviews. Add a new entry after every fut
 - `git diff --check` — passed.
 - `npm run format:check` — passed.
 
+## Review After M05 Deterministic Route Selection Implementation
+
+**Date:** 2026-07-26
+
+**Reviewed by:** Codex GPT-5.6
+
+**Outcome:** Approved
+
+**Approved:** Yes
+
+**Issues:** None.
+
+**Follow-up:** Proceed to M06 only when implementing deterministic vehicle snapshots and lifecycle behavior.
+
+### Scope
+
+- Reviewed the pure shortest-path service, its public exports, dependency boundary, and deterministic tests against the routing rules.
+
+### Findings
+
+- The service depends only on public Core and District contracts, accepts immutable input data, and has no presentation, application, browser, timing, asynchronous, cache, or mutable singleton dependency.
+- It uses Dijkstra's algorithm with closed-edge exclusion, supplied congestion-weighted costs, a default multiplier of one, and the required lexicographic edge-ID tie-break.
+- The implementation returns a typed no-route outcome instead of throwing for an unreachable destination.
+- Tests cover the baseline path, the documented closure alternate, equal-cost paths in reverse insertion order, disconnected graphs, blocked edges, congestion weighting, input immutability, and repeated-call determinism.
+
+### Action
+
+- Added the M05 routing service and focused unit tests. No M02/M03 contract, presentation, simulation lifecycle, scenario, analytics, or insight behavior changed.
+
+### Verification
+
+- `npm run typecheck` — passed.
+- `npm run lint` — passed.
+- `npm run test` — 24 tests passed.
+- `npm run build` — passed.
+- `npm run format:check` — passed.
+- `npm audit --omit=dev` — 0 vulnerabilities.
+
 ## Future Review Entry Template
 
 Copy this structure for every future review:

@@ -31,3 +31,10 @@
 - Aligned the static scene coordinates with `DISTRICT_GRAPH.md`: the documented main corridor is straight and the documented alternative route is visibly distinct.
 - Added focused projection and canvas-boundary component tests.
 - Verified production build, type checking, linting, formatting, tests, and the production-only dependency audit.
+
+## M05 - Deterministic Route Selection
+
+- Added a pure Dijkstra shortest-path service for immutable district graphs.
+- Added blocked-edge filtering and congestion-weighted route costs with a default multiplier of one.
+- Added deterministic lexicographic edge-ID tie-breaking and typed no-route results.
+- Added focused unit tests for baseline and alternate paths, blocked edges, congestion, disconnected graphs, immutability, and repeatability.

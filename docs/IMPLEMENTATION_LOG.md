@@ -146,3 +146,37 @@ This document records completed implementation activities in a review-friendly f
 - Routing, vehicle movement, simulation, congestion, and road-closure behavior.
 - Dynamic vehicles, congestion indicators, and closure markers (M09).
 - Analytics, insights, and scenario controls.
+
+## M05 - Deterministic Route Selection
+
+### Files Created
+
+- `src/simulation/routing/shortest-path.ts` — pure Dijkstra route selection with immutable input handling and typed outcomes.
+- `src/simulation/routing/shortest-path.test.ts` — deterministic routing unit tests.
+
+### Files Modified
+
+- `src/simulation/index.ts` — exported the public route-selection API and types.
+- `docs/CHANGELOG.md` — added the M05 changelog entry.
+- `docs/KNOWN_ISSUES.md` — removed the completed routing-selection deferral while retaining later simulation work.
+
+### Public APIs Added
+
+- `selectShortestRoute`
+- `RouteSelectionInput`
+- `SelectedRoute`
+- `NoRouteError`
+- `RouteSelectionResult`
+
+### Tests Added
+
+- Baseline route selection through the one closable edge.
+- Alternate-route selection when the closable edge is blocked.
+- Lexicographic tie-breaking independent of edge insertion order.
+- Typed no-route behavior, blocked-edge exclusion, congestion weighting, immutable inputs, and repeated-call determinism.
+
+### Deferred Until Later Milestones
+
+- Vehicle movement, logical ticks, spawning, waiting, and congestion calculation.
+- Road-closure scenario execution and re-routing orchestration.
+- Analytics, deterministic insights, and all interactive or rendering changes.
