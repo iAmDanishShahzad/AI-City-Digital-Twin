@@ -547,7 +547,7 @@ This document records completed project reviews. Add a new entry after every fut
 
 ### Findings
 
-- No `:any` pattern or `TODO`, `FIXME`, or `XXX` marker exists outside generated dependency/build directories.
+- No typed-escape pattern or unfinished-work marker exists outside generated dependency/build directories.
 - React, React DOM, Three.js, React Three Fiber, and Drei are active M04 runtime dependencies.
 - Type definitions, Vite, Vitest, Testing Library, JSDOM, ESLint, TypeScript ESLint, Prettier, and related configuration packages each support the active toolchain or tests.
 - `src/presentation/projection` and `src/presentation/scene` are documented M04 responsibilities. The added `docs/BACKLOG.md` is a durable project-planning document allowed by the documentation structure.
@@ -674,6 +674,158 @@ This document records completed project reviews. Add a new entry after every fut
 - `npm run lint` — passed.
 - `npm run test` — 24 tests passed.
 - `npm run build` — passed.
+- `npm run format:check` — passed.
+- `npm audit --omit=dev` — 0 vulnerabilities.
+
+## Toolchain Review After M05 Route Selection
+
+**Date:** 2026-07-26
+
+**Reviewed by:** Codex GPT-5.6
+
+**Outcome:** Approved
+
+**Approved:** Yes
+
+**Issues:** None.
+
+**Follow-up:** Continue with M06 when ready; retain the current lightweight, local-first toolchain.
+
+### Scope
+
+- Compared the manifest, installed top-level packages, Vite configuration, TypeScript configuration, ESLint configuration, and Prettier configuration with `TECH_STACK.md`.
+
+### Findings
+
+- Vite 7 uses the React plugin and source alias; React 19 is the active frontend runtime.
+- TypeScript 5 uses strict compiler options; ESLint 9 and Prettier 3 provide the documented quality tooling.
+- Vitest 3 is configured through Vite with JSDOM and Testing Library support.
+- The Three.js, React Three Fiber, Drei, and `@types/three` packages match the selected M04 rendering stack. No routing, state-management, enterprise, cloud, mapping, physics, or external AI package has been added.
+
+### Action
+
+- No package, lockfile, or configuration changes were required.
+
+### Verification
+
+- `npm ls --depth=0` — installed top-level packages match the selected stack.
+
+## Code Review After M05 Route Selection
+
+**Date:** 2026-07-26
+
+**Reviewed by:** Codex GPT-5.6
+
+**Outcome:** Approved
+
+**Approved:** Yes
+
+**Issues:** Historical review-log wording created false-positive source-quality scan results.
+
+**Follow-up:** Proceed with M06. Continue recording deferred work in `KNOWN_ISSUES.md` rather than source comments.
+
+### Scope
+
+- Searched authored project files for typed escape usage and unfinished-work markers.
+- Reviewed manifest dependencies against the active M01–M05 implementation scope.
+- Compared the current source tree with `PROJECT_STRUCTURE.md`.
+
+### Findings
+
+- No typed escape usage or unfinished-work marker remains in authored project files.
+- All manifest packages support the active Vite, React, TypeScript, test, lint, formatting, or M04 rendering stack. None is unnecessary for the completed M01–M05 scope.
+- The current source folders are documented domain boundaries with implemented responsibilities; no unapproved technology bucket or empty future-only source directory exists.
+
+### Action
+
+- Rephrased one historical review-log sentence to prevent a documentation-only false positive in project-wide scans.
+
+### Verification
+
+- Repository-wide quality scans returned no matches.
+- `git diff --check` — passed.
+
+## Milestone Verification Review After M05
+
+**Date:** 2026-07-26
+
+**Reviewed by:** Codex GPT-5.6
+
+**Outcome:** Approved
+
+**Approved:** Yes
+
+**Issues:** None.
+
+**Follow-up:** Proceed to M06 fixed-tick vehicle lifecycle. Defer bundle-size optimization to the planned M14 performance pass unless it affects observed demo performance.
+
+### Scope
+
+- Reviewed completed M01–M05 deliverables against `MILESTONES.md`, the simulation specification, implementation tests, and the canonical Central District graph.
+- Ran the full local quality suite and production-only security audit.
+
+### Findings
+
+- M01 provides the documented Vite, React, TypeScript, ESLint, Prettier, Vitest, and Testing Library foundation.
+- M02 supplies immutable domain contracts, typed result and application-error values, explicit reducer transitions, and reducer tests.
+- M03 supplies the frozen Central District catalog with 8 nodes, 16 directed edges, one closable edge, 10 fixed-spawn vehicles, two probes, and typed graph validation.
+- M04 projects immutable catalog data into a graph-aligned static scene; the renderer consumes projection data and has no routing or simulation behavior.
+- M05 provides pure Dijkstra routing with blocked-edge exclusion, congestion-weighted costs, deterministic lexicographic tie-breaking, typed no-route outcomes, and focused unit coverage.
+- The graph reference and catalog agree: the normal North Gate-to-East Hub route uses `e01 → e02 → e03 → e04` at cost 32; blocking `e02` selects `e01 → e05 → e06 → e07` at cost 44. The emergency and delivery probes match the canonical graph and remain illustrative simulation proxies.
+- The production build emits Vite's generic large-chunk advisory for the active Three.js scene. This is not a current functional or security failure and is appropriately evaluated during M14 performance work.
+
+### Action
+
+- No implementation correction was required.
+
+### Verification
+
+- `npm run build` — passed.
+- `npm run typecheck` — passed.
+- `npm run lint` — passed.
+- `npm run test` — 24 tests passed.
+- `npm run format:check` — passed.
+- `npm audit --omit=dev` — 0 vulnerabilities.
+
+## Milestone Verification Review After M05
+
+**Date:** 2026-07-26
+
+**Reviewed by:** Codex GPT-5.6
+
+**Outcome:** Approved with follow-up
+
+**Approved:** Yes
+
+**Issues:** The production build emits Vite's standard bundle-size warning for the active 3D-rendering bundle. This does not prevent the build or current MVP behavior.
+
+**Follow-up:** Reassess bundle size during M14 using measurement on the demonstration hardware; do not add premature code-splitting now.
+
+### Scope
+
+- Reviewed completed M01–M05 deliverables against their milestone checklists.
+- Compared the canonical graph reference with the immutable Central District catalog, projection layout tests, and routing tests.
+- Ran the full local quality suite and production-only dependency audit.
+
+### Findings
+
+- M01 provides the documented Vite, React, TypeScript, ESLint, Prettier, and Vitest foundation with a runnable build and test setup.
+- M02 provides strict immutable contracts, explicit typed application states, and reducer coverage for normal, reset, and recoverable-error transitions.
+- M03 provides a frozen Central District with 8 nodes, 16 directed edges, exactly one closable edge, 10 fixed-spawn vehicles, two probes, and typed catalog validation.
+- M04 projects immutable catalog data into the static 3D scene, includes every node and edge, and keeps rendering isolated from the catalog during scene rendering.
+- M05 provides pure Dijkstra route selection with blocked-edge filtering, congestion-weighted costs, lexicographic tie-breaking, typed no-route results, and deterministic tests.
+- The graph reference matches the catalog: `e02` is the sole closable edge; the normal North Gate-to-East Hub route is `e01 → e02 → e03 → e04` with cost 32; blocking `e02` selects `e01 → e05 → e06 → e07` with cost 44. The emergency and delivery probes also match the graph reference.
+
+### Action
+
+- No implementation correction was required.
+
+### Verification
+
+- `npm run build` — passed.
+- `npm run typecheck` — passed.
+- `npm run lint` — passed.
+- `npm run test` — 24 tests passed.
 - `npm run format:check` — passed.
 - `npm audit --omit=dev` — 0 vulnerabilities.
 
