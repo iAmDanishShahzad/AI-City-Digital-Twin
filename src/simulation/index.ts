@@ -16,3 +16,6 @@ export type {
   RouteSelectionResult,
   SelectedRoute,
 } from './routing/shortest-path';
+export { advanceSimulation } from './engine/advance-simulation';
+export type { SimulationAdvanceInput } from './engine/advance-simulation';
+export { createInitialSimulationSnapshot } from './engine/create-initial-simulation-snapshot';

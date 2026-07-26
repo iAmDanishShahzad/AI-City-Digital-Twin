@@ -1,3 +1,4 @@
+export { compareText } from './compare-text';
 export type {
   AreaId,
   DistrictId,

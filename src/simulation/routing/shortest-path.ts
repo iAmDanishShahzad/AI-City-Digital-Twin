@@ -1,4 +1,4 @@
-import type { EdgeId, NodeId, Result } from '@/core';
+import { compareText, type EdgeId, type NodeId, type Result } from '@/core';
 import type { DistrictDefinition, RoadEdge } from '@/district';
 
 export type RouteSelectionInput = {
@@ -161,14 +161,6 @@ function compareEdgeSequences(first: readonly EdgeId[], second: readonly EdgeId[
 
 function lastNodeId(candidate: RouteCandidate): NodeId {
   return candidate.nodeIds[candidate.nodeIds.length - 1] ?? '';
-}
-
-function compareText(first: string, second: string): number {
-  if (first === second) {
-    return 0;
-  }
-
-  return first < second ? -1 : 1;
 }
 
 function freezeSelectedRoute(candidate: RouteCandidate): SelectedRoute {

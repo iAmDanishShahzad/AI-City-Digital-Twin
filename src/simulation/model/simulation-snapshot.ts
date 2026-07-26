@@ -19,7 +19,7 @@ export type MovingVehicleState = {
   readonly routePosition: number;
 };
 
-export type WaitingReason = 'destination-reached' | 'no-route';
+export type WaitingReason = 'destination-reached' | 'no-route' | 'node-arrival';
 
 export type WaitingVehicleState = {
   readonly kind: 'waiting';

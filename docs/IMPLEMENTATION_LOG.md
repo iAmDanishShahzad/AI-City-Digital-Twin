@@ -180,3 +180,64 @@ This document records completed implementation activities in a review-friendly f
 - Vehicle movement, logical ticks, spawning, waiting, and congestion calculation.
 - Road-closure scenario execution and re-routing orchestration.
 - Analytics, deterministic insights, and all interactive or rendering changes.
+
+## M06 - Fixed-Tick Vehicle Lifecycle
+
+### Files Created
+
+- `src/simulation/engine/create-initial-simulation-snapshot.ts` — immutable tick-zero snapshot factory.
+- `src/simulation/engine/advance-simulation.ts` — pure fixed-tick vehicle lifecycle engine.
+- `src/simulation/engine/simulation-constants.ts` — M06 tick and wait-duration constants.
+- `src/simulation/engine/advance-simulation.test.ts` — deterministic lifecycle and snapshot tests.
+
+### Files Modified
+
+- `src/simulation/index.ts` — exported the public simulation-engine API.
+- `src/simulation/model/simulation-snapshot.ts` — added the minimal `node-arrival` waiting reason required to retain a completed-edge arrival until the next tick's planning phase.
+- `docs/CHANGELOG.md` — added the M06 changelog entry.
+- `docs/KNOWN_ISSUES.md` — removed the completed vehicle-lifecycle deferral while retaining congestion work.
+
+### Public APIs Added
+
+- `createInitialSimulationSnapshot`
+- `advanceSimulation`
+- `SimulationAdvanceInput`
+
+### Tests Added
+
+- Snapshot creation, scheduled spawning, fixed-duration movement, edge completion, and node arrival.
+- Destination waiting, respawning, no-route waiting, and retry behavior.
+- Immutable occupancy, identifier-sorted processing, immutable snapshots, and deterministic replay.
+- Global tick staging: prior-snapshot occupancy, same-tick movement after planning, and deferred node-arrival planning.
+
+### Deferred Until Later Milestones
+
+- Congestion calculation, congestion-weighted movement, and display classifications (M07).
+- Road-closure execution, rerouting, scenario application, and reset behavior (M08).
+- Presentation updates, analytics, insights, and controls.
+
+## Post-M06 - Comparator Consolidation
+
+### Files Created
+
+- `src/core/compare-text.ts` — dependency-free deterministic text comparator shared by routing and simulation internals.
+
+### Files Modified
+
+- `src/core/index.ts` — exported the shared comparator through Core's public entry point.
+- `src/simulation/routing/shortest-path.ts` — now imports the shared comparator.
+- `src/simulation/engine/advance-simulation.ts` — now imports the shared comparator.
+- `src/simulation/engine/create-initial-simulation-snapshot.ts` — now imports the shared comparator.
+- `docs/IMPLEMENTATION_LOG.md` and `docs/REVIEW_LOG.md` — recorded this narrowly scoped cleanup.
+
+### Public APIs Added
+
+- `compareText` — exported through the Core public entry point. No simulation public API changed.
+
+### Tests Added
+
+- None. Existing routing and lifecycle tests exercise all retained comparison behavior.
+
+### Deferred Until Later Milestones
+
+- All M07 and later scope remains deferred unchanged.

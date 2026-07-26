@@ -829,6 +829,296 @@ This document records completed project reviews. Add a new entry after every fut
 - `npm run format:check` — passed.
 - `npm audit --omit=dev` — 0 vulnerabilities.
 
+## M01–M06 Completion Review
+
+**Date:** 2026-07-26
+
+**Reviewed by:** Codex GPT-5.6
+
+**Outcome:** Needs revision
+
+**Approved:** No
+
+**Issues:** M06 creates immutable snapshots and covers the required lifecycle transitions, but its per-vehicle advancement does not model the globally staged tick sequence required by the simulation specification. It calculates occupancy only after state transitions and replans completed-edge arrivals in the same advance.
+
+**Follow-up:** Correct M06 tick staging before M07. In particular, retain previous-snapshot occupancy for the M07 multiplier calculation and make node-arrival replanning agree with the documented tick boundary.
+
+### Scope
+
+- Reviewed M01–M06 against their milestone deliverables, implementation records, simulation specification, and source boundaries.
+- Ran the full local quality suite and production-only dependency audit.
+
+### Findings
+
+- M01 toolchain, M02 contracts, M03 district catalog, M04 static scene, and M05 route selection are complete within their documented boundaries.
+- M06 provides a pure snapshot factory, fixed tick duration, scheduled spawning, movement, waiting, retry, respawn, immutable output, deterministic vehicle-ID ordering, and lifecycle tests.
+- The M06 engine processes each vehicle independently rather than staging the whole tick. This means it does not preserve pre-movement occupancy for the next milestone and performs node-arrival route planning before the next tick's planning phase.
+- No M07 congestion formula, closure execution, analytics, or presentation behavior has been introduced.
+
+### Risks for M07
+
+- M07 requires occupancy from the previous snapshot before movement. Add a clear pre-movement occupancy phase rather than deriving it only from the already-advanced vehicle states.
+- Define and test one unambiguous tick-boundary convention for spawn, retry, arrival, and respawn so the congestion multiplier applies to the correct movement tick.
+- Keep the same congestion multiplier available to both movement and route planning without coupling simulation to rendering or application state.
+
+### Deferred Work
+
+- M07 congestion and route-cost rules.
+- M08 road-closure execution, scenario application, rerouting, and reset.
+- M09–M15 presentation, analytics, insights, controls, quality pass, and submission preparation.
+
+### Verification
+
+- `npm run typecheck` — passed.
+- `npm run lint` — passed.
+- `npm run test` — 34 tests passed.
+- `npm run build` — passed.
+- `npm run format:check` — passed.
+- `npm audit --omit=dev` — 0 vulnerabilities.
+
+## M06 Tick-Processing Correction Review
+
+**Date:** 2026-07-26
+
+**Reviewed by:** Codex GPT-5.6
+
+**Outcome:** Approved
+
+**Approved:** Yes
+
+**Issues:** The earlier M06 review identified an unstaged tick model. The correction is complete.
+
+**Follow-up:** Proceed to M07 congestion rules using the retained previous-snapshot occupancy phase.
+
+### Scope
+
+- Reviewed the M06 engine correction for the global scenario, occupancy, multiplier, planning, movement, arrival, waiting, and publication sequence.
+
+### Findings
+
+- Scenario events remain an explicit no-op in M06; no closure or scenario behavior was added.
+- Occupancy is calculated from the input snapshot before planning and movement. M06 passes flat multipliers of one to routing and movement; M07 owns the non-flat calculation.
+- Spawned and retried vehicles plan before movement and move once in the same logical tick.
+- Completed-edge arrivals publish a zero-duration `node-arrival` waiting state, so route selection occurs only in the following tick's planning phase.
+- Every published snapshot is deeply immutable at its owned boundary, vehicle processing is identifier-sorted, and no wall-clock, random, asynchronous, presentation, analytics, or congestion behavior was introduced.
+
+### Action
+
+- Reworked M06 into global tick phases and added the minimal waiting-reason extension needed to retain node arrivals across the tick boundary.
+
+### Verification
+
+- Typecheck, lint, and all 34 tests passed before final build and audit verification.
+
+## M01–M06 Completion Verification After M06 Correction
+
+**Date:** 2026-07-26
+
+**Reviewed by:** Codex GPT-5.6
+
+**Outcome:** Approved with follow-up
+
+**Approved:** Yes
+
+**Issues:** The identical private `compareText` helper appears in the routing service and two simulation-engine files. This is a small maintainability issue, not a milestone-boundary or functional defect.
+
+**Follow-up:** Proceed to M07 only. Extract the dependency-free comparator into Core as a narrowly scoped cleanup when it is next touched; preserve M06's global staged tick model.
+
+### Scope
+
+- Verified M01 through M06 against their deliverables and definitions of done in `MILESTONES.md`.
+- Checked that completed implementation remains within each milestone boundary after the M06 tick-processing correction.
+- Reviewed the documented deferred work and M07 integration risks.
+
+### Findings
+
+- M01 provides the documented Vite, React, TypeScript, ESLint, Prettier, Vitest, Testing Library, strict typing, and source-alias foundation.
+- M02 provides immutable domain contracts, typed results and recoverable errors, explicit application state transitions, and reducer tests.
+- M03 provides the validated immutable Central District catalog, including 8 nodes, 16 directed edges, one closable edge, deterministic vehicles, and the two required probes.
+- M04 provides a projection-isolated, static 3D district scene without routing, lifecycle, scenario, analytics, or insight behavior.
+- M05 provides pure deterministic Dijkstra routing with weighted costs, blocked-edge support, lexicographic tie-breaking, typed no-route results, and focused tests.
+- M06 provides the immutable snapshot factory and fixed-tick lifecycle. Its global phases retain previous-snapshot occupancy, use flat M06 multipliers, plan before movement, defer completed-edge replanning to the next tick, and preserve stable vehicle-ID ordering.
+- No M07 congestion formula, M08 scenario execution or closures, M09 traffic rendering, analytics, insights, controls, or reset behavior has entered the implemented M01–M06 scope.
+
+### Risks for M07
+
+- Replace only the current flat multiplier placeholder with the specified previous-occupancy, capacity-based multiplier, capped at three; use the same multiplier for route cost and movement in a tick.
+- Retain the global phase boundary: occupancy must remain derived from the prior snapshot, and no vehicle may observe another vehicle's same-tick state change.
+- Add explicit tests for free-flow, busy, congested, and capped multiplier behavior without adding road-closure behavior early.
+- The existing production build has a non-blocking Three.js bundle-size advisory. Measure it on demonstration hardware during M14 before introducing code-splitting.
+
+### Deferred Work
+
+- M07 congestion and route-cost rules.
+- M08 road-closure scenario execution, rerouting, and reset.
+- M09–M15 dynamic traffic presentation, analytics, deterministic insights, guided controls, hardening, and submission work.
+- M04 visual polish, the deferred development-toolchain advisory, and runtime AI integration, as recorded in `KNOWN_ISSUES.md`.
+
+### Action
+
+- No implementation change was made. This review entry records the verified completion state and the narrow M07 follow-up risks.
+
+### Verification
+
+- The current local verification suite remains green: typecheck, lint, 34 tests, production build, and formatting check.
+- `git diff --check` — passed before this documentation-only entry.
+
+## Code-Quality Review After M06 Comparator Consolidation
+
+**Date:** 2026-07-26
+
+**Reviewed by:** Codex GPT-5.6
+
+**Outcome:** Approved
+
+**Approved:** Yes
+
+**Issues:** None. The previously recorded duplicate comparator implementation is resolved.
+
+**Follow-up:** Proceed to M07 only; preserve the staged M06 tick model.
+
+### Scope
+
+- Reviewed the extraction of the repeated deterministic text-comparison implementation into one dependency-free Core utility.
+
+### Findings
+
+- Routing and M06 simulation code share exactly one comparator implementation.
+- The comparison semantics and all existing simulation and routing behavior remain unchanged.
+- No simulation contracts, lifecycle logic, dependencies, or M07 behavior changed.
+
+### Action
+
+- Removed the three duplicate private helpers and imported the shared Core utility.
+
+### Verification
+
+- Typecheck, lint, tests, production build, and formatting check passed.
+
+## M01–M06 Completion Verification After Comparator Consolidation
+
+**Date:** 2026-07-26
+
+**Reviewed by:** Codex GPT-5.6
+
+**Outcome:** Needs revision
+
+**Approved:** No
+
+**Issues:** M01–M06 functional deliverables are complete, but three cross-domain imports bypass Core's public `index.ts` entry point. `shortest-path.ts`, `advance-simulation.ts`, and `create-initial-simulation-snapshot.ts` import `@/core/compare-text` directly, contrary to `PROJECT_STRUCTURE.md` and `DEPENDENCY_RULES.md`.
+
+**Follow-up:** Before M07, re-export `compareText` through `@/core` and update the three imports. Do not alter comparator behavior or simulation APIs.
+
+### Scope
+
+- Verified the documented M01–M06 toolchain, contracts, district, scene, routing, and lifecycle deliverables.
+- Checked milestone boundaries, deferred work, and the current import-boundary compliance issue.
+
+### Findings
+
+- M01 through M06 satisfy their functional deliverables: the toolchain, immutable contracts, validated Central District, static projection scene, deterministic routing, and staged fixed-tick lifecycle are implemented.
+- No M07 congestion formula, M08 closure/reset behavior, M09 traffic rendering, analytics, insights, or interactive scenario controls are present.
+- The comparator cleanup removed duplicate logic, but its direct Core-file imports violate the project's public-module import convention. This is an architecture hygiene defect, not a lifecycle or routing defect.
+
+### Risks for M07
+
+- Correct the Core import boundary before adding congestion behavior so M07 builds on the documented dependency model.
+- Derive occupancy from the previous snapshot, calculate capacity-based multipliers capped at three, and use the same multiplier for route cost and movement.
+- Preserve M06's global staged tick boundary and add tests for zero, busy, congested, and capped occupancy cases.
+
+### Deferred Work
+
+- M07 congestion and route-cost rules; M08 scenario execution, rerouting, and reset; M09–M15 dynamic presentation, analytics, insights, controls, quality, and submission work.
+- M04 visual polish, the deferred development-toolchain advisory, and runtime AI integration remain tracked in `KNOWN_ISSUES.md`.
+
+### Action
+
+- No implementation change was made in this review; the import-boundary correction remains required.
+
+### Verification
+
+- Typecheck, lint, 34 tests, production build, and formatting check passed in the preceding repository review.
+- `git diff --check` — passed before this review entry.
+
+## Architecture Review After Core Import-Boundary Repair
+
+**Date:** 2026-07-26
+
+**Reviewed by:** Codex GPT-5.6
+
+**Outcome:** Approved
+
+**Approved:** Yes
+
+**Issues:** None. The previously reported Core deep-import violation is resolved.
+
+**Follow-up:** Proceed to M07 only; preserve the staged M06 tick model.
+
+### Scope
+
+- Reviewed the Core public export and all routing and simulation imports of the shared deterministic comparator.
+
+### Findings
+
+- `compareText` is exported through `@/core`.
+- Routing and simulation import Core only through its documented public entry point.
+- Comparator behavior, simulation APIs, lifecycle logic, and tests are unchanged.
+
+### Action
+
+- Repaired the documented import boundary without adding M07 behavior.
+
+### Verification
+
+- Typecheck, lint, tests, production build, formatting check, and the production-only dependency audit passed.
+
+## Final M01–M06 Completion Verification
+
+**Date:** 2026-07-26
+
+**Reviewed by:** Codex GPT-5.6
+
+**Outcome:** Approved
+
+**Approved:** Yes
+
+**Issues:** None.
+
+**Follow-up:** Proceed to M07 congestion and route-cost rules only.
+
+### Scope
+
+- Verified the completed M01 through M06 deliverables, module boundaries, deferred work, and the M07 handoff risks.
+
+### Findings
+
+- M01 toolchain: Vite, React, TypeScript, linting, formatting, and tests are configured and verified.
+- M02 contracts: immutable domain contracts, typed results, and application-state reducer transitions are implemented and tested.
+- M03 district catalog: the validated immutable Central District contains the documented graph, vehicle roster, closable edge, and probes.
+- M04 scene: the static district scene consumes projection data and does not implement simulation behavior.
+- M05 routing: deterministic, typed Dijkstra route selection remains isolated from presentation.
+- M06 vehicle lifecycle: the staged fixed-tick engine publishes immutable, deterministic snapshots without congestion, closure, analytics, rendering, or interface behavior.
+- M01–M06 boundaries remain intact. The Core comparator is consumed through Core's public entry point, resolving the prior import-boundary finding.
+
+### Risks for M07
+
+- Derive congestion from previous-snapshot occupancy, using the capacity-based multiplier capped at three.
+- Apply the same multiplier to route cost and movement for a tick while preserving M06's global staged tick order.
+- Add deterministic tests for free-flow, busy, congested, and capped conditions without introducing M08 closure behavior.
+
+### Deferred Work
+
+- M07 congestion and route-cost rules; M08 scenario execution, rerouting, and reset; M09–M15 dynamic presentation, analytics, insights, controls, quality, and submission work.
+- M04 visual polish, the deferred development-toolchain advisory, and runtime AI integration remain tracked in `KNOWN_ISSUES.md`.
+
+### Action
+
+- No implementation change was required.
+
+### Verification
+
+- Typecheck, lint, 34 tests, production build, formatting check, and `npm audit --omit=dev` passed in the latest repository verification.
+
 ## Future Review Entry Template
 
 Copy this structure for every future review:

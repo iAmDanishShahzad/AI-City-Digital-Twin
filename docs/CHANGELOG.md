@@ -38,3 +38,16 @@
 - Added blocked-edge filtering and congestion-weighted route costs with a default multiplier of one.
 - Added deterministic lexicographic edge-ID tie-breaking and typed no-route results.
 - Added focused unit tests for baseline and alternate paths, blocked edges, congestion, disconnected graphs, immutability, and repeatability.
+
+## M06 - Fixed-Tick Vehicle Lifecycle
+
+- Added immutable tick-zero simulation snapshot creation for the deterministic baseline roster.
+- Added a pure fixed-tick simulation engine for scheduled spawning, movement, node arrival, waiting, retry, and respawn behavior.
+- Added immutable edge-occupancy calculation and ascending vehicle-ID processing.
+- Added lifecycle tests for deterministic replay, snapshot immutability, and all required vehicle transitions.
+- Refined the engine into explicit global tick phases: previous-snapshot occupancy, flat M06 multipliers, planning, movement, arrival resolution, waiting, and immutable publication.
+
+## Post-M06 - Core Import Boundary
+
+- Exported the existing deterministic text comparator through the Core public entry point.
+- Updated routing and simulation to consume the comparator through `@/core`, preserving the documented module boundary.
