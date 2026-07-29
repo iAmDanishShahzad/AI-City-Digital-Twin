@@ -54,6 +54,7 @@ function createSnapshot(tick: number, vehicles: readonly VehicleState[]): Simula
     scenarioState: { kind: 'normal' },
     vehicles,
     edgeOccupancy: {},
+    edgeTraffic: {},
     scenarioEvents: [],
   };
 }
@@ -106,6 +107,7 @@ describe('createInitialSimulationSnapshot', () => {
     expect(Object.isFrozen(snapshot)).toBe(true);
     expect(Object.isFrozen(snapshot.vehicles)).toBe(true);
     expect(Object.isFrozen(snapshot.edgeOccupancy)).toBe(true);
+    expect(Object.isFrozen(snapshot.edgeTraffic)).toBe(true);
   });
 });
 
@@ -141,7 +143,7 @@ describe('advanceSimulation', () => {
     });
   });
 
-  it('moves a vehicle by its base speed over the fixed 0.1-second tick duration', () => {
+  it('moves a vehicle using the deterministic effective speed from prior-tick occupancy', () => {
     const afterSpawn = advanceSimulation({
       district: centralDistrictDefinition,
       snapshot: createInitialSimulationSnapshot(centralDistrictDefinition),
@@ -155,7 +157,7 @@ describe('advanceSimulation', () => {
     expect(firstVehicle.kind).toBe('moving');
 
     if (firstVehicle.kind === 'moving') {
-      expect(firstVehicle.edgeProgress).toBeCloseTo(0.15);
+      expect(firstVehicle.edgeProgress).toBeCloseTo(0.135);
       expect(firstVehicle.edgeProgress).toBeGreaterThan(0);
       expect(firstVehicle.edgeProgress).toBeLessThan(1);
     }
@@ -323,7 +325,7 @@ describe('advanceSimulation', () => {
     });
   });
 
-  it('calculates immutable occupancy from the next snapshot moving vehicles', () => {
+  it('publishes immutable occupancy derived from the post-movement vehicle state', () => {
     const snapshot = createSnapshot(0, [
       createMovingVehicle(
         'vehicle-02',

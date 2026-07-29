@@ -36,6 +36,7 @@ const baselineSnapshot: SimulationSnapshot = {
   scenarioState: { kind: 'normal' },
   vehicles: [],
   edgeOccupancy: {},
+  edgeTraffic: {},
   scenarioEvents: [],
 };
 

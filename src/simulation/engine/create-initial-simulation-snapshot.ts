@@ -1,12 +1,9 @@
 import { compareText, type ScenarioState } from '@/core';
 import type { DistrictDefinition } from '@/district';
 
-import type {
-  EdgeOccupancy,
-  ScheduledVehicleState,
-  SimulationSnapshot,
-} from '../model/simulation-snapshot';
+import type { ScheduledVehicleState, SimulationSnapshot } from '../model/simulation-snapshot';
 import { simulationConstants } from './simulation-constants';
+import { deriveEdgeTraffic } from '../traffic/derive-edge-traffic';
 
 const normalScenarioState: ScenarioState = Object.freeze({ kind: 'normal' });
 
@@ -21,22 +18,14 @@ export function createInitialSimulationSnapshot(district: DistrictDefinition): S
       }),
     )
     .sort((first, second) => compareText(first.vehicleId, second.vehicleId));
+  const traffic = deriveEdgeTraffic({ district, vehicles });
 
   return Object.freeze({
     tick: simulationConstants.initialTick,
     scenarioState: normalScenarioState,
     vehicles: Object.freeze(vehicles),
-    edgeOccupancy: createEmptyEdgeOccupancy(district),
+    edgeOccupancy: traffic.edgeOccupancy,
+    edgeTraffic: traffic.edgeTraffic,
     scenarioEvents: Object.freeze([]),
   });
-}
-
-function createEmptyEdgeOccupancy(district: DistrictDefinition): EdgeOccupancy {
-  const occupancy: Record<string, number> = {};
-
-  for (const edge of district.edges) {
-    occupancy[edge.id] = 0;
-  }
-
-  return Object.freeze(occupancy);
 }

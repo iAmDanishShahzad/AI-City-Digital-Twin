@@ -41,10 +41,21 @@ export type ScenarioEvent = {
 
 export type EdgeOccupancy = Readonly<Record<EdgeId, number>>;
 
+export type EdgeTrafficClassification = 'free-flowing' | 'busy' | 'congested';
+
+export type EdgeTrafficCondition = {
+  readonly occupancyRatio: number;
+  readonly congestionMultiplier: number;
+  readonly classification: EdgeTrafficClassification;
+};
+
+export type EdgeTraffic = Readonly<Record<EdgeId, EdgeTrafficCondition>>;
+
 export type SimulationSnapshot = {
   readonly tick: number;
   readonly scenarioState: ScenarioState;
   readonly vehicles: readonly VehicleState[];
   readonly edgeOccupancy: EdgeOccupancy;
+  readonly edgeTraffic: EdgeTraffic;
   readonly scenarioEvents: readonly ScenarioEvent[];
 };

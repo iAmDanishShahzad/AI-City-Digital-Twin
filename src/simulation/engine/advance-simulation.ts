@@ -2,7 +2,8 @@ import { compareText, type EdgeId, type NodeId, type ScenarioState, type Vehicle
 import type { DistrictDefinition, RoadEdge, VehicleDefinition } from '@/district';
 
 import type {
-  EdgeOccupancy,
+  EdgeTraffic,
+  EdgeTrafficCondition,
   MovingVehicleState,
   Route,
   ScenarioEvent,
@@ -12,6 +13,11 @@ import type {
 } from '../model/simulation-snapshot';
 import { selectShortestRoute } from '../routing/shortest-path';
 import { simulationConstants } from './simulation-constants';
+import {
+  createCongestionMultiplierMap,
+  deriveEdgeOccupancy,
+  deriveEdgeTraffic,
+} from '../traffic/derive-edge-traffic';
 
 export type SimulationAdvanceInput = {
   readonly district: DistrictDefinition;
@@ -47,9 +53,11 @@ export function advanceSimulation(input: SimulationAdvanceInput): SimulationSnap
   const scenarioState = input.snapshot.scenarioState;
   const scenarioEvents = input.snapshot.scenarioEvents;
 
-  // M07 will replace the flat multipliers with a calculation based on this occupancy.
-  const previousEdgeOccupancy = calculateEdgeOccupancy(input.district, input.snapshot.vehicles);
-  const congestionMultipliers = createFlatCongestionMultipliers(previousEdgeOccupancy);
+  const previousTraffic = deriveEdgeTraffic({
+    district: input.district,
+    vehicles: input.snapshot.vehicles,
+  });
+  const congestionMultipliers = createCongestionMultiplierMap(previousTraffic.edgeTraffic);
 
   const plannedVehicles = [...input.snapshot.vehicles]
     .sort((first, second) => compareText(first.vehicleId, second.vehicleId))
@@ -68,12 +76,17 @@ export function advanceSimulation(input: SimulationAdvanceInput): SimulationSnap
   );
   const resolvedVehicles = movementResults.map(resolveCompletedEdgeArrival);
   const nextVehicles = resolvedVehicles.map(applyWaitingTransition);
+  const nextEdgeOccupancy = deriveEdgeOccupancy({
+    district: input.district,
+    vehicles: nextVehicles,
+  });
 
   return freezeSnapshot({
     tick: input.snapshot.tick + 1,
     scenarioState,
     vehicles: nextVehicles,
-    edgeOccupancy: calculateEdgeOccupancy(input.district, nextVehicles),
+    edgeOccupancy: nextEdgeOccupancy,
+    edgeTraffic: previousTraffic.edgeTraffic,
     scenarioEvents,
   });
 }
@@ -285,43 +298,25 @@ function createNodeArrivalWait(vehicleId: VehicleId, nodeId: NodeId): WaitingVeh
   });
 }
 
-function calculateEdgeOccupancy(
-  district: DistrictDefinition,
-  vehicles: readonly VehicleState[],
-): EdgeOccupancy {
-  const occupancy: Record<string, number> = {};
-
-  for (const edge of district.edges) {
-    occupancy[edge.id] = 0;
-  }
-
-  for (const vehicle of vehicles) {
-    if (vehicle.kind === 'moving') {
-      occupancy[vehicle.currentEdgeId] = (occupancy[vehicle.currentEdgeId] ?? 0) + 1;
-    }
-  }
-
-  return Object.freeze(occupancy);
-}
-
-function createFlatCongestionMultipliers(
-  previousEdgeOccupancy: EdgeOccupancy,
-): ReadonlyMap<EdgeId, number> {
-  return new Map(
-    Object.keys(previousEdgeOccupancy)
-      .sort(compareText)
-      .map((edgeId) => [edgeId, 1] as const),
-  );
-}
-
 function freezeSnapshot(snapshot: SimulationSnapshot): SimulationSnapshot {
   return Object.freeze({
     tick: snapshot.tick,
     scenarioState: freezeScenarioState(snapshot.scenarioState),
     vehicles: Object.freeze(snapshot.vehicles.map(freezeVehicle)),
     edgeOccupancy: Object.freeze({ ...snapshot.edgeOccupancy }),
+    edgeTraffic: freezeEdgeTraffic(snapshot.edgeTraffic),
     scenarioEvents: Object.freeze(snapshot.scenarioEvents.map(freezeScenarioEvent)),
   });
+}
+
+function freezeEdgeTraffic(edgeTraffic: EdgeTraffic): EdgeTraffic {
+  const frozenTraffic: Record<string, EdgeTrafficCondition> = {};
+
+  for (const edgeId of Object.keys(edgeTraffic).sort(compareText)) {
+    frozenTraffic[edgeId] = Object.freeze({ ...edgeTraffic[edgeId] });
+  }
+
+  return Object.freeze(frozenTraffic);
 }
 
 function freezeVehicle(vehicle: VehicleState): VehicleState {

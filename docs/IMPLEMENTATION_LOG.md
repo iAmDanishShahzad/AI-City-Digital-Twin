@@ -241,3 +241,102 @@ This document records completed implementation activities in a review-friendly f
 ### Deferred Until Later Milestones
 
 - All M07 and later scope remains deferred unchanged.
+
+## M07 - Deterministic Congestion
+
+### Files Created
+
+- `src/simulation/traffic/derive-edge-traffic.ts` — pure immutable derivation of edge occupancy, congestion multipliers, and traffic classifications.
+- `src/simulation/traffic/derive-edge-traffic.test.ts` — congestion model unit tests.
+- `src/simulation/engine/advance-simulation-congestion.test.ts` — staged-tick routing, movement, replay, and immutability integration tests.
+
+### Files Modified
+
+- `src/simulation/model/simulation-snapshot.ts` — added immutable edge-traffic conditions to the published simulation snapshot.
+- `src/simulation/engine/create-initial-simulation-snapshot.ts` — publishes deterministic zero-occupancy traffic data at tick zero.
+- `src/simulation/engine/advance-simulation.ts` — uses prior-snapshot traffic data for both planning and movement, then publishes traffic data for the next snapshot.
+- `src/simulation/index.ts` — exported the traffic derivation API and contracts.
+- `src/simulation/engine/advance-simulation.test.ts` and `src/app/application/application-reducer.test.ts` — aligned snapshot fixtures and expected effective-speed behavior with M07.
+- `docs/CHANGELOG.md` and `docs/KNOWN_ISSUES.md` — recorded completion and removed the completed congestion deferral.
+
+### Public APIs Added
+
+- `deriveEdgeTraffic`
+- `EdgeTrafficInput`
+- `EdgeTrafficData`
+- `EdgeTraffic`
+- `EdgeTrafficCondition`
+- `EdgeTrafficClassification`
+
+### Tests Added
+
+- Zero, half-capacity, full-capacity, and capped-multiplier traffic calculations.
+- Free-flowing, busy, and congested deterministic classifications.
+- Previous-snapshot occupancy integration for movement and congestion-weighted spawning route selection.
+- Stable ordering, replay determinism, and immutable traffic/snapshot data.
+
+### Deferred Until Later Milestones
+
+- Road-closure scenario execution, blocked-edge rerouting, and reset behavior (M08).
+- Dynamic rendering of vehicles and congestion conditions (M09).
+- Analytics, deterministic insights, and controls.
+
+## M07 - Congestion Tick-Calculation Correction
+
+### Files Modified
+
+- `src/simulation/engine/advance-simulation.ts` — removed the post-movement traffic derivation and publishes the immutable pre-movement traffic result used by routing and movement.
+- `src/simulation/engine/advance-simulation-congestion.test.ts` — added coverage proving published traffic remains the pre-movement result when a vehicle completes an edge.
+- `docs/CHANGELOG.md`, `docs/IMPLEMENTATION_LOG.md`, and `docs/REVIEW_LOG.md` — recorded the focused M07 repair.
+
+### Public APIs Added or Changed
+
+- None.
+
+### Tests Added
+
+- Published edge occupancy and traffic conditions remain the single pre-movement calculation for the completed tick.
+
+### Deferred Until Later Milestones
+
+- M08 closure behavior, rerouting, and reset; M09 rendering; analytics, insights, and controls remain unchanged.
+
+## M07 - Traffic Derivation Efficiency Correction
+
+### Files Modified
+
+- `src/simulation/traffic/derive-edge-traffic.ts` — passes the single pre-sorted edge collection to the occupancy helper during traffic derivation.
+- `docs/CHANGELOG.md`, `docs/IMPLEMENTATION_LOG.md`, and `docs/REVIEW_LOG.md` — recorded the focused efficiency repair.
+
+### Public APIs Added or Changed
+
+- None.
+
+### Tests Added
+
+- None. Existing deterministic traffic, lifecycle, and replay tests retain identical observable behavior.
+
+### Deferred Until Later Milestones
+
+- M08 closure behavior, rerouting, and reset; M09 rendering; analytics, insights, and controls remain unchanged.
+
+## M07 - Snapshot Occupancy Timing Correction
+
+### Files Modified
+
+- `src/simulation/traffic/derive-edge-traffic.ts` — extracted immutable occupancy-only derivation without recalculating congestion or classifications.
+- `src/simulation/engine/advance-simulation.ts` — publishes post-movement occupancy while retaining pre-movement traffic conditions for the completed tick.
+- `src/simulation/engine/advance-simulation-congestion.test.ts` and `src/simulation/engine/advance-simulation.test.ts` — verified the distinct occupancy and traffic timing responsibilities.
+- `docs/CHANGELOG.md`, `docs/IMPLEMENTATION_LOG.md`, and `docs/REVIEW_LOG.md` — recorded the focused repair.
+
+### Public APIs Added or Changed
+
+- None.
+
+### Tests Added
+
+- Updated the traffic-publication regression test to confirm completed vehicles leave published occupancy while published traffic remains the pre-movement calculation.
+
+### Deferred Until Later Milestones
+
+- M08 closure behavior, rerouting, and reset; M09 rendering; analytics, insights, and controls remain unchanged.

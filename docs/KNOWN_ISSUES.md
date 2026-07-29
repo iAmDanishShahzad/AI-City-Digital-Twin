@@ -23,10 +23,6 @@ This document tracks intentionally postponed work. Record deferred items here ra
 
 **Mitigation:** The affected packages are omitted from a production install and process local repository file patterns rather than application runtime input. Do not run the forced audit fix during active MVP development.
 
-### Congestion Behavior
-
-**Reason:** Congestion calculation, congestion-weighted movement, and display classifications are scheduled for M07 after the fixed-tick vehicle lifecycle is available.
-
 ### Road-Closure Scenario Behavior
 
 **Reason:** Scenario validation, effects, rerouting, and reset behavior are scheduled for M08. M02 contains contracts only.

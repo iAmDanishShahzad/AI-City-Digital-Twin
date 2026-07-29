@@ -1119,6 +1119,103 @@ This document records completed project reviews. Add a new entry after every fut
 
 - Typecheck, lint, 34 tests, production build, formatting check, and `npm audit --omit=dev` passed in the latest repository verification.
 
+## M07 Congestion Tick-Calculation Repair Review
+
+**Date:** 2026-07-29
+
+**Reviewed by:** Codex GPT-5.6
+
+**Outcome:** Approved
+
+**Approved:** Yes
+
+**Issues:** The prior implementation derived edge traffic twice in one tick. The repair now reuses the sole pre-movement result for routing, movement, and snapshot publication.
+
+**Follow-up:** Proceed to the M07 verification review; M08 remains deferred.
+
+### Scope
+
+- Reviewed the focused M07 correction for single-calculation congestion timing.
+
+### Findings
+
+- `advanceSimulation` derives traffic only from the previous snapshot before planning and movement.
+- The same immutable traffic data is used for routing, effective speed, and the published snapshot.
+- No closure, scenario execution, rendering, analytics, or insight behavior was added.
+
+### Action
+
+- Removed the post-movement traffic derivation and added a regression test for published pre-movement traffic.
+
+### Verification
+
+- Typecheck, lint, tests, production build, formatting check, and the production-only dependency audit are run with this repair.
+
+## M07 Snapshot Occupancy Timing Repair Review
+
+**Date:** 2026-07-29
+
+**Reviewed by:** Codex GPT-5.6
+
+**Outcome:** Approved
+
+**Approved:** Yes
+
+**Issues:** The prior snapshot combined post-movement vehicles with pre-movement occupancy. The repair now derives post-movement occupancy without recalculating traffic conditions.
+
+**Follow-up:** Proceed to the final M07 verification review; M08 remains deferred.
+
+### Scope
+
+- Reviewed the focused M07 repair for snapshot occupancy consistency.
+
+### Findings
+
+- Congestion and classifications remain calculated exactly once from pre-movement occupancy.
+- Routing and movement continue to use that single pre-movement traffic result.
+- Snapshot occupancy is calculated separately from post-movement vehicles without deriving multipliers or classifications.
+- No M08 behavior was added.
+
+### Action
+
+- Added an occupancy-only derivation and updated the regression coverage for a completed edge.
+
+### Verification
+
+- Typecheck, lint, tests, production build, formatting check, and the production-only dependency audit are run with this repair.
+
+## M07 Traffic Derivation Efficiency Repair Review
+
+**Date:** 2026-07-29
+
+**Reviewed by:** Codex GPT-5.6
+
+**Outcome:** Approved
+
+**Approved:** Yes
+
+**Issues:** The traffic derivation sorted district edges twice. The repair reuses one ordered collection for its occupancy and traffic work.
+
+**Follow-up:** Proceed to the final M07 verification review; M08 remains deferred.
+
+### Scope
+
+- Reviewed the focused M07 removal of duplicate edge sorting.
+
+### Findings
+
+- Pre-movement traffic derivation sorts district edges once.
+- Post-movement occupancy derivation retains its own single deterministic sort.
+- Congestion calculations, route selection, movement, snapshots, and public APIs are unchanged.
+
+### Action
+
+- Passed the ordered edge collection to a private occupancy helper.
+
+### Verification
+
+- Typecheck, lint, tests, production build, formatting check, and the production-only dependency audit are run with this repair.
+
 ## Future Review Entry Template
 
 Copy this structure for every future review:

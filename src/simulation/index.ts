@@ -1,5 +1,8 @@
 export type {
   EdgeOccupancy,
+  EdgeTraffic,
+  EdgeTrafficClassification,
+  EdgeTrafficCondition,
   MovingVehicleState,
   Route,
   ScenarioEvent,
@@ -19,3 +22,5 @@ export type {
 export { advanceSimulation } from './engine/advance-simulation';
 export type { SimulationAdvanceInput } from './engine/advance-simulation';
 export { createInitialSimulationSnapshot } from './engine/create-initial-simulation-snapshot';
+export { deriveEdgeTraffic } from './traffic/derive-edge-traffic';
+export type { EdgeTrafficData, EdgeTrafficInput } from './traffic/derive-edge-traffic';

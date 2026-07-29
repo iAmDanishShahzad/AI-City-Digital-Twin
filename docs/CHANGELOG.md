@@ -51,3 +51,25 @@
 
 - Exported the existing deterministic text comparator through the Core public entry point.
 - Updated routing and simulation to consume the comparator through `@/core`, preserving the documented module boundary.
+
+## M07 - Deterministic Congestion
+
+- Added immutable, previous-snapshot edge-traffic derivation for occupancy, congestion multipliers, and visual classifications.
+- Applied the same deterministic congestion multiplier to both route selection and vehicle movement during each tick.
+- Added the documented free-flowing, busy, and congested classifications without rendering behavior.
+- Added focused tests for zero, partial, full, and capped occupancy; route-cost integration; movement slowdown; replay determinism; ordering; and immutability.
+
+## M07 - Congestion Tick-Calculation Correction
+
+- Reused the single immutable pre-movement edge-traffic result for route selection, movement, and snapshot publication.
+- Removed the post-movement traffic derivation so each logical tick performs one congestion calculation.
+
+## M07 - Snapshot Occupancy Timing Correction
+
+- Kept the single pre-movement traffic calculation for route cost, movement speed, and published traffic conditions.
+- Added a separate post-movement occupancy-only derivation so each snapshot's vehicle and occupancy state remain consistent.
+
+## M07 - Traffic Derivation Efficiency Correction
+
+- Reused the single ordered edge collection while deriving pre-movement occupancy and traffic conditions.
+- Removed duplicate edge sorting without changing simulation behavior or public APIs.
