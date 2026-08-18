@@ -1,5 +1,12 @@
 # Changelog
 
+## M08 - Road-Closure Scenario and Reset
+
+- Added the validated Central District road-closure scenario and a serializable closure effect.
+- Added next-tick closure scheduling, idempotent selection, closed-edge route exclusion, deterministic rerouting, and immutable application events.
+- Added deterministic simulation reset that recreates a fresh normal-state snapshot.
+- Added scenario tests for scheduling, closure activation, in-progress traversal, rerouting, no-route waiting, reset, replay, and immutability.
+
 ## M01 - Project Toolchain
 
 - Initialized the Vite, React, and TypeScript project foundation.

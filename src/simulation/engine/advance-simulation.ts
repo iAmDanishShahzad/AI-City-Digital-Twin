@@ -49,9 +49,12 @@ export function advanceSimulation(input: SimulationAdvanceInput): SimulationSnap
   );
   const edgesById = new Map(input.district.edges.map((edge) => [edge.id, edge] as const));
 
-  // M06 has no scenario effect. This phase preserves the immutable event state for M08.
-  const scenarioState = input.snapshot.scenarioState;
-  const scenarioEvents = input.snapshot.scenarioEvents;
+  const scenarioTransition = applyScheduledScenarioEvents(
+    input.snapshot.scenarioState,
+    input.snapshot.scenarioEvents,
+    input.snapshot.tick + 1,
+  );
+  const blockedEdgeIds = blockedEdgesFor(scenarioTransition.scenarioState);
 
   const previousTraffic = deriveEdgeTraffic({
     district: input.district,
@@ -59,7 +62,10 @@ export function advanceSimulation(input: SimulationAdvanceInput): SimulationSnap
   });
   const congestionMultipliers = createCongestionMultiplierMap(previousTraffic.edgeTraffic);
 
-  const plannedVehicles = [...input.snapshot.vehicles]
+  const vehiclesForPlanning = scenarioTransition.didApplyClosure
+    ? discardAffectedRemainingRoutes(input.snapshot.vehicles, blockedEdgeIds)
+    : input.snapshot.vehicles;
+  const plannedVehicles = [...vehiclesForPlanning]
     .sort((first, second) => compareText(first.vehicleId, second.vehicleId))
     .map((vehicle) =>
       planVehicle(
@@ -68,6 +74,7 @@ export function advanceSimulation(input: SimulationAdvanceInput): SimulationSnap
         input.district,
         vehicleDefinitionsById,
         congestionMultipliers,
+        blockedEdgeIds,
       ),
     );
 
@@ -83,11 +90,11 @@ export function advanceSimulation(input: SimulationAdvanceInput): SimulationSnap
 
   return freezeSnapshot({
     tick: input.snapshot.tick + 1,
-    scenarioState,
+    scenarioState: scenarioTransition.scenarioState,
     vehicles: nextVehicles,
     edgeOccupancy: nextEdgeOccupancy,
     edgeTraffic: previousTraffic.edgeTraffic,
-    scenarioEvents,
+    scenarioEvents: scenarioTransition.scenarioEvents,
   });
 }
 
@@ -97,6 +104,7 @@ function planVehicle(
   district: DistrictDefinition,
   vehicleDefinitionsById: ReadonlyMap<VehicleId, VehicleDefinition>,
   congestionMultipliers: ReadonlyMap<EdgeId, number>,
+  blockedEdgeIds: ReadonlySet<EdgeId>,
 ): PlannedVehicle {
   const definition = vehicleDefinitionsById.get(vehicle.vehicleId);
 
@@ -108,7 +116,13 @@ function planVehicle(
     return {
       vehicle:
         vehicle.nextSpawnTick === currentTick
-          ? planRoute(definition, definition.originNodeId, district, congestionMultipliers)
+          ? planRoute(
+              definition,
+              definition.originNodeId,
+              district,
+              congestionMultipliers,
+              blockedEdgeIds,
+            )
           : vehicle,
       decrementsWait: false,
     };
@@ -120,7 +134,13 @@ function planVehicle(
 
   if (vehicle.reason === 'node-arrival') {
     return {
-      vehicle: planRoute(definition, vehicle.nodeId, district, congestionMultipliers),
+      vehicle: planRoute(
+        definition,
+        vehicle.nodeId,
+        district,
+        congestionMultipliers,
+        blockedEdgeIds,
+      ),
       decrementsWait: false,
     };
   }
@@ -130,7 +150,7 @@ function planVehicle(
       vehicle.reason === 'destination-reached' ? definition.originNodeId : vehicle.nodeId;
 
     return {
-      vehicle: planRoute(definition, originNodeId, district, congestionMultipliers),
+      vehicle: planRoute(definition, originNodeId, district, congestionMultipliers, blockedEdgeIds),
       decrementsWait: false,
     };
   }
@@ -229,12 +249,14 @@ function planRoute(
   originNodeId: NodeId,
   district: DistrictDefinition,
   congestionMultipliers: ReadonlyMap<EdgeId, number>,
+  blockedEdgeIds: ReadonlySet<EdgeId>,
 ): VehicleState {
   const routeResult = selectShortestRoute({
     district,
     originNodeId,
     destinationNodeId: definition.destinationNodeId,
     congestionMultipliers,
+    blockedEdgeIds,
   });
 
   if (!routeResult.ok) {
@@ -259,6 +281,81 @@ function planRoute(
     route: Object.freeze({ edgeIds: Object.freeze([...routeResult.value.edgeIds]) }),
     routePosition: 0,
   });
+}
+
+type ScenarioTransition = {
+  readonly scenarioState: ScenarioState;
+  readonly scenarioEvents: readonly ScenarioEvent[];
+  readonly didApplyClosure: boolean;
+};
+
+function applyScheduledScenarioEvents(
+  scenarioState: ScenarioState,
+  scenarioEvents: readonly ScenarioEvent[],
+  applyingTick: number,
+): ScenarioTransition {
+  if (scenarioState.kind !== 'normal') {
+    return { scenarioState, scenarioEvents, didApplyClosure: false };
+  }
+
+  const event = [...scenarioEvents]
+    .sort((first, second) => compareText(first.id, second.id))
+    .find(
+      (candidate) => candidate.appliedTick === null && candidate.scheduledTick === applyingTick,
+    );
+
+  if (event === undefined) {
+    return { scenarioState, scenarioEvents, didApplyClosure: false };
+  }
+
+  const nextScenarioState: ScenarioState = Object.freeze({
+    kind: 'road-closure',
+    scenarioId: event.scenarioId,
+    closedEdgeId: event.closedEdgeId,
+  });
+  const nextScenarioEvents = scenarioEvents.map((candidate) =>
+    candidate.id === event.id
+      ? Object.freeze({ ...candidate, appliedTick: applyingTick })
+      : candidate,
+  );
+
+  return {
+    scenarioState: nextScenarioState,
+    scenarioEvents: Object.freeze(nextScenarioEvents),
+    didApplyClosure: true,
+  };
+}
+
+function blockedEdgesFor(scenarioState: ScenarioState): ReadonlySet<EdgeId> {
+  return scenarioState.kind === 'road-closure'
+    ? new Set([scenarioState.closedEdgeId])
+    : new Set<EdgeId>();
+}
+
+function discardAffectedRemainingRoutes(
+  vehicles: readonly VehicleState[],
+  blockedEdgeIds: ReadonlySet<EdgeId>,
+): readonly VehicleState[] {
+  let hasAffectedVehicle = false;
+  const nextVehicles = vehicles.map((vehicle) => {
+    if (
+      vehicle.kind !== 'moving' ||
+      !vehicle.route.edgeIds
+        .slice(vehicle.routePosition)
+        .some((edgeId) => blockedEdgeIds.has(edgeId))
+    ) {
+      return vehicle;
+    }
+
+    hasAffectedVehicle = true;
+    return Object.freeze({
+      ...vehicle,
+      route: Object.freeze({ edgeIds: Object.freeze([vehicle.currentEdgeId]) }),
+      routePosition: 0,
+    });
+  });
+
+  return hasAffectedVehicle ? nextVehicles : vehicles;
 }
 
 function createNoRouteWait(vehicleId: VehicleId, nodeId: NodeId): WaitingVehicleState {

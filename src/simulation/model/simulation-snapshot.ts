@@ -35,6 +35,7 @@ export type VehicleState = ScheduledVehicleState | MovingVehicleState | WaitingV
 export type ScenarioEvent = {
   readonly id: ScenarioEventId;
   readonly scenarioId: ScenarioId;
+  readonly closedEdgeId: EdgeId;
   readonly scheduledTick: number;
   readonly appliedTick: number | null;
 };

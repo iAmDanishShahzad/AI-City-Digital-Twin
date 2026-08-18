@@ -340,3 +340,43 @@ This document records completed implementation activities in a review-friendly f
 ### Deferred Until Later Milestones
 
 - M08 closure behavior, rerouting, and reset; M09 rendering; analytics, insights, and controls remain unchanged.
+
+## M08 - Road-Closure Scenario and Reset
+
+### Files Created
+
+- `src/scenarios/catalog/central-road-closure.ts` — the single immutable MVP road-closure definition.
+- `src/scenarios/catalog/validate-scenario-definition.ts` and `src/scenarios/model/scenario-validation.ts` — typed, dependency-safe scenario validation.
+- `src/scenarios/effects/create-scenario-effect.ts` — serializable closure-effect construction.
+- `src/simulation/engine/schedule-road-closure.ts` — next-tick, idempotent closure scheduling.
+- `src/simulation/engine/reset-simulation.ts` — fresh deterministic reset factory.
+- `src/simulation/engine/road-closure.test.ts` — M08 behavior coverage.
+
+### Files Modified
+
+- `src/scenarios/index.ts` — exports the minimal scenario catalog, validation, and effect APIs.
+- `src/simulation/model/simulation-snapshot.ts` — records the immutable closed-edge value on scenario events.
+- `src/simulation/engine/advance-simulation.ts` — applies scheduled closures before occupancy, preserves in-progress travel, excludes closed edges from replanning, and discards affected remaining routes.
+- `src/simulation/index.ts` — exports closure scheduling and reset operations.
+- `docs/CHANGELOG.md` and `docs/KNOWN_ISSUES.md` — recorded M08 completion and removed its completed deferral.
+
+### Public APIs Added
+
+- `centralRoadClosureScenario`
+- `validateScenarioDefinition`
+- `createScenarioEffect`
+- `scheduleRoadClosure`
+- `RoadClosureScheduleInput`
+- `resetSimulation`
+- `ScenarioValidationError`
+- `ScenarioValidationErrorCode`
+
+### Tests Added
+
+- Valid scenario validation, one-tick scheduling, active-selection idempotency, in-progress closed-edge traversal, node-arrival-only rerouting, closure-driven no-route waiting, reset replay, and immutable scenario snapshots.
+
+### Deferred Until Later Milestones
+
+- Dynamic vehicle, congestion, and closure rendering (M09).
+- Baseline comparison and analytics (M10–M11).
+- Deterministic insights and interactive scenario controls (M12–M13).
